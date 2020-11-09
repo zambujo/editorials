@@ -1,0 +1,6 @@
+library(tidyverse)
+library(glue)
+library(rvest)
+library(conflicted)
+conflict_prefer("pluck", "purrr", "rvest")
+conflict_prefer("guess_encoding", "rvest", "readr")
