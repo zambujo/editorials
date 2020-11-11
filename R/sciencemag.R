@@ -1,16 +1,19 @@
-library(here)
+library("here")
 source(here("R", "packages.R"))
 
 # logic -------------------------------------------------------------------
 
-parse_year_issues <- function(year, base_url = url_root) {
+parse_year_issues <- function(year,
+                              base_url = "https://science.sciencemag.org") {
   current_url <- glue("{base_url}/content/by/year/{year}")
   glue("Parsing {current_url} ...") %>% message()
 
-  current_url %>%
+  url_list <- current_url %>%
     read_html() %>%
     html_nodes(".issue-month-detail .highwire-cite-linked-title") %>%
     html_attr("href")
+
+  glue("{base_url}{url_list}")
 }
 
 parse_twil <- function(twil_url) {
@@ -22,6 +25,9 @@ parse_twil <- function(twil_url) {
     html_nodes(".compilation-overline") %>%
     html_text() %>%
     str_to_title()
+  ref_editor <- twil_html %>%
+    html_nodes(".name") %>%
+    html_text()
 
   twil_reference <- twil_html %>%
     html_nodes("ol .compilation")
@@ -35,7 +41,8 @@ parse_twil <- function(twil_url) {
     str_subset("[[:space:]][(][12][0-9]{3}[)][.]$")
   # note that ref_paper can contain multiple papers separated by ";"
 
-  tibble(topic = ref_topics,
+  tibble(editor = ref_editor,
+         topic = ref_topics,
          internal_url = ref_url,
          external_ref = ref_paper)
 }
@@ -44,18 +51,17 @@ parse_twil <- function(twil_url) {
 # main --------------------------------------------------------------------
 
 # httr::set_config(httr::user_agent("me@example.com; +https://example.com/info.html"))
-
-url_root <- "https://science.sciencemag.org"
+url_root = "https://science.sciencemag.org"
 
 archive_links <- 2005:2020 %>%
-  sample(2) %>%
+  sample(1) %>%
   map(parse_year_issues) %>%
   flatten_chr()
 
-(archive_links <- glue("{url_root}{archive_links}/twil"))
+(twil_links <- glue("{archive_links}/twil"))
 
-sample_result <- archive_links %>%
-  sample(2) %>%
+sample_result <- twill_links %>%
+  sample(3) %>%
   map_df(parse_twil)
 
 sample_result
