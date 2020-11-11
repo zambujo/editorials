@@ -62,7 +62,8 @@ parse_twil <- function(twil_url) {
     unnest(ref) %>%
     mutate(
       ref = str_squish(ref),
-      ref = str_remove(ref, "[;.]$"))
+      ref = str_remove(ref, "[;.]$"),
+      doi = str_extract(ref, "\\b10[.][[:digit:]]{4,9}[/][[:print:]]+\\b"))
 }
 
 
