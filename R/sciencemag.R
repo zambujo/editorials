@@ -21,12 +21,17 @@ parse_twil <- function(twil_url) {
 
   twil_html <- twil_url %>% read_html()
 
+  ref_editor <- twil_html %>%
+    html_nodes(".name") %>%
+    html_text()
+
   ref_topics <- twil_html %>%
     html_nodes(".compilation-overline") %>%
     html_text() %>%
     str_to_title()
-  ref_editor <- twil_html %>%
-    html_nodes(".name") %>%
+
+  ref_title <- twil_html %>%
+    html_nodes("#content-block-markup h1") %>%
     html_text()
 
   twil_reference <- twil_html %>%
@@ -42,6 +47,7 @@ parse_twil <- function(twil_url) {
   # note that ref_paper can contain multiple papers separated by ";"
 
   tibble(editor = ref_editor,
+         title = ref_title,
          topic = ref_topics,
          internal_url = ref_url,
          external_ref = ref_paper)
