@@ -1,8 +1,3 @@
-library("here")
-source(here("R", "packages.R"))
-
-# logic -------------------------------------------------------------------
-
 parse_year_issues <- function(year, polite_bow) {
   glue("Parsing /content/by/year/{year} ...") %>% message()
   session <- nod(bow = polite_bow,
@@ -50,7 +45,7 @@ parse_twil <- function(twil_url, polite_bow) {
     html_nodes(p_path) %>%
     html_text()
 
-  if (length(ref_editor) == 0)
+  if (length(ref_editor) != length(ref_title))
     ref_editor = rep(NA_character_, length(ref_title))
 
   tibble(
@@ -61,29 +56,3 @@ parse_twil <- function(twil_url, polite_bow) {
     ref = ref_paper
   )
 }
-
-
-# main --------------------------------------------------------------------
-
-scimag_bow <- bow(url = "https://science.sciencemag.org",
-                  user_agent = "Joao Martins <https://github.com/zambujo>",
-                  force = TRUE)
-
-archive_links <- 2005:2020 %>%
-  map(parse_year_issues, polite_bow = scimag_bow) %>%
-  flatten_chr()
-
-sample_result <- glue("{archive_links}/twil") %>%
-  map_df(parse_twil, polite_bow = scimag_bow)
-
-# post-processing ---------------------------------------------------------
-
-sample_result <- sample_result %>%
-  rowid_to_column("id") %>%
-  mutate(ref = str_split(ref, "(?<=[[:space:]][(][12][0-9]{3}[)][;])")) %>%
-  unnest(ref) %>%
-  mutate(
-    ref = str_squish(ref),
-    ref = str_remove(ref, "[;.]$"),
-    doi = str_extract(ref, "\\b10[.][[:digit:]]{4,9}[/][[:graph:]]+\\b")
-  )
