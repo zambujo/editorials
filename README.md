@@ -1,12 +1,12 @@
-# Editorials
+# Editorial Highlights
 
-Collection of editiorial highlights. 
+A collection of editorial highlights from top tier journals. 
 
 ## License
 
 Distributed under the MIT License.
 
-## Acknoledgments
+## Credits
 
-This work is inspired by [In Search of Outstanding Research Advances](https://zenodo.org/record/4155204). 
+[In Search of Outstanding Research Advances](https://zenodo.org/record/4155204). 
 

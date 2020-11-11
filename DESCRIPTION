@@ -1,0 +1,24 @@
+Type: Compendium
+Package: Editorial Highlights
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.1
+Authors@R: 
+    person(given = "Joao",
+           family = "Martins",
+           role = c("aut", "cre"),
+           email = "joao.martins@gmx.net",
+           comment = c(ORCID = "0000-0001-7961-4280"))
+Description: Collecting editorial highlights from top tier
+    journals
+License: MIT
+Depends: 
+    conflicted,
+    glue,
+    here,
+    polite,
+    rvest,
+    tidyverse
+Suggests:
+    xml2
+Encoding: UTF-8
+LazyData: true
