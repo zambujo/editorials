@@ -21,10 +21,6 @@ parse_twil <- function(twil_url) {
 
   twil_html <- twil_url %>% read_html()
 
-  ref_editor <- twil_html %>%
-    html_nodes(".name") %>%
-    html_text()
-
   ref_topics <- twil_html %>%
     html_nodes(".compilation-overline") %>%
     html_text() %>%
@@ -39,18 +35,34 @@ parse_twil <- function(twil_url) {
 
   ref_url <- twil_reference %>%
     html_attr("xml:base")
-  ref_paper <- twil_reference %>%
-    html_nodes("p") %>%
-    html_text() %>%
-    # assumes that ref ends with ex:  "... (2008)."
-    str_subset("[[:space:]][(][12][0-9]{3}[)][.]$")
-  # note that ref_paper can contain multiple papers separated by ";"
 
-  tibble(editor = ref_editor,
-         title = ref_title,
-         topic = ref_topics,
-         internal_url = ref_url,
-         external_ref = ref_paper)
+  p_ids <- twil_reference %>%
+    html_nodes("p") %>%
+    html_attr("id")
+  p_idx <- p_ids %>%
+    str_sub(1, 16) %>%
+    table() %>%
+    cumsum()
+  p_path <- glue("#{p_ids[p_idx]}") %>%
+    paste(collapse = ", ")
+  ref_paper <- twil_reference %>%
+    html_nodes(p_path) %>%
+    html_text()
+
+  res <- tibble(
+    title = ref_title,
+    topic = ref_topics,
+    url = ref_url,
+    ref = ref_paper
+  )
+
+  res %>%
+    mutate(
+      ref = str_split(ref, "(?<=[[:space:]][(][12][0-9]{3}[)][;])")) %>%
+    unnest(ref) %>%
+    mutate(
+      ref = str_squish(ref),
+      ref = str_remove(ref, "[;.]$"))
 }
 
 
@@ -66,7 +78,7 @@ archive_links <- 2005:2020 %>%
 
 (twil_links <- glue("{archive_links}/twil"))
 
-sample_result <- twill_links %>%
+sample_result <- twil_links %>%
   sample(3) %>%
   map_df(parse_twil)
 
