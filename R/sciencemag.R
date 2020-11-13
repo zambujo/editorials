@@ -7,7 +7,7 @@ parse_year_issues <- function(year, polite_bow) {
     html_attr("href")
 }
 
-parse_twil <- function(twil_url, polite_bow) {
+parse_twil <- function(twil_url, file_path, polite_bow) {
   glue("Parsing {twil_url} ...") %>% message()
   session <- nod(bow = polite_bow,
                  path = twil_url)
@@ -48,11 +48,15 @@ parse_twil <- function(twil_url, polite_bow) {
   if (length(ref_editor) != length(ref_title))
     ref_editor = rep(NA_character_, length(ref_title))
 
-  tibble(
+  res <- tibble(
+    highlight_key = ref_url,
     title = ref_title,
     editor = ref_editor,
     topic = ref_topics,
-    url = ref_url,
     ref = ref_paper
-  )
+  ) %>%
+    mutate(editorial_key = twil_url) %>%
+    select(editorial_key, everything())
+
+  write_csv(res, file_path, append = file.exists(file_path))
 }
