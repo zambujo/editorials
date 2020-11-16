@@ -40,7 +40,7 @@ if (FALSE) {
 }
 
 # nature ------------------------------------------------------------------
-if (TRUE) {
+if (FALSE) {
   source(here("R", "nature.R"))
 
   session_bow <- bow(url = "https://www.nature.com",
@@ -57,17 +57,26 @@ if (TRUE) {
     bind_rows()
 
   write_csv(nature_issues, here("data-raw", "nature-issues.csv"))
+}
 
-  # contents
-  nature_contents <-
-    pull(nature_issues, issue_key) %>%
-    map(parse_issue_thisweek, polite_bow = session_bow) %>%
-    bind_rows() %>%
-    filter(contents_labels == "Research Highlights")
-  write_csv(nature_contents, here("data-raw", "nature-contents.csv"))
+if (TRUE) {
+  source(here("R", "nature.R"))
+  session_bow <- bow(url = "https://www.nature.com",
+                     user_agent = "Martins <https://github.com/zambujo>",
+                     force = TRUE)
+
+  read_csv(here("data-raw", "nature-issues.csv")) %>%
+    pull(issue_key) %>%
+    walk(
+      parse_issue_thisweek,
+      file_path = here("data-raw", "nature-contents.csv"),
+      polite_bow = session_bow
+    )
 
   # highlights
-  pull(nature_contents, article_key) %>%
+  read_csv(here("data-raw", "nature-contents.csv")) %>%
+    filter(contents_labels == "Research Highlights") %>%
+    pull(article_key) %>%
     walk(
       parse_article,
       file_path = here("data-raw", "nature-highlights.csv"),

@@ -25,7 +25,7 @@ parse_volume_issues <- function(volume, polite_bow) {
   )
 }
 
-parse_issue_thisweek <- function(issue, polite_bow) {
+parse_issue_thisweek <- function(issue, file_path, polite_bow) {
   glue("Parsing {issue} ...") %>% message()
 
   session <- nod(bow = polite_bow, path = issue)
@@ -38,14 +38,18 @@ parse_issue_thisweek <- function(issue, polite_bow) {
       html_nodes("#ResearchHighlights-section")
   }
 
-  tibble(
+  res <- tibble(
+    issue_key = issue,
     article_key = contents %>%
       html_nodes("a") %>%
-      html_attr("href"),
+      html_attr("href") %>%
+      str_subset("^/articles/"),
     contents_labels = contents %>%
       html_nodes(".mb4 span:nth-child(1)") %>%
       html_text()
   )
+
+  write_csv(res, file_path, append = file.exists(file_path))
 }
 
 parse_article <- function(article, file_path, polite_bow) {
