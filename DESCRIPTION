@@ -3,7 +3,7 @@ Package: Editorials
 Title: A collection of research publications highlighted in Science and Nature.
 Version: 0.0.1
 Authors@R: 
-    person(given = "Joao",
+    person(given = "João",
            family = "Martins",
            role = c("aut", "cre"),
            email = "joao.martins@gmx.net",
@@ -21,4 +21,6 @@ Suggests:
     xml2
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/zambujo/editorials
+BugReports: https://github.com/zambujo/editorials/issues
 RoxygenNote: 7.1.1

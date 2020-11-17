@@ -8,12 +8,12 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' nature_volumes(bow("https://www.nature.com"))
+#' get_nature_volumes(bow("https://www.nature.com"))
 #' }
 #'
-nature_volumes <- function(polite_bow) {
+get_nature_volumes <- function(polite_bow) {
   if (missing(polite_bow))
-    stop("Missing polite::bow() session")
+    stop("Missing polite::bow() session. Try to be polite. Please.")
 
   session <- nod(bow = polite_bow,
                  path = "nature/volumes")
@@ -28,8 +28,7 @@ nature_volumes <- function(polite_bow) {
            year = as.integer(year))
 }
 
-
-nature_issues <- function(volume, polite_bow) {
+get_nature_issues <- function(volume, file_path, polite_bow) {
   glue("Parsing {volume} ...") %>% message()
 
   session <- nod(bow = polite_bow, path = volume)
@@ -37,13 +36,19 @@ nature_issues <- function(volume, polite_bow) {
   issues <- scrape(session) %>%
     html_nodes(".flex-box-item")
 
-  tibble(
+  res <- tibble(
     issue_key = issues %>% html_attr("href"),
     issue_date = issues %>% html_nodes(".text-gray") %>% html_text()
   )
+
+  if (missing(file_path)) {
+    return(res)
+  } else {
+    write_csv(res, file_path, append = file.exists(file_path))
+  }
 }
 
-nature_contents <- function(issue, file_path, polite_bow) {
+get_nature_contents <- function(issue, file_path, polite_bow) {
   glue("Parsing {issue} ...") %>% message()
 
   session <- nod(bow = polite_bow, path = issue)
@@ -76,7 +81,7 @@ nature_contents <- function(issue, file_path, polite_bow) {
   }
 }
 
-nature_articles <- function(article, file_path, polite_bow) {
+get_nature_articles <- function(article, file_path, polite_bow) {
   glue("Parsing {article} ...") %>% message()
 
   session <- nod(bow = polite_bow, path = article)
