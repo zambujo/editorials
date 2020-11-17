@@ -1,6 +1,6 @@
 # Editorial Highlights
 
-Editorial highlights from Nature and Science Magazine.
+A collection of more than 10'000 editorial/research highlights from [Nature](https://www.nature.com) and [Science Magazine](https://science.sciencemag.org).
 
 ## License
 
