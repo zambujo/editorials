@@ -1,17 +1,35 @@
-parse_volumes <- function(polite_bow) {
-  session <- nod(bow = polite_bow, path = "nature/volumes")
-  volumes <- scrape(session) %>% html_nodes("#volume-decade-list")
+#' Retrieve the URL of the listed volumes of the journal
+#'
+#' @param polite_bow An HTTP polite::bow session object.
+#'
+#' @return A tibble with the URL, the date, and the corresponding
+#' year of publication of each volume.
+#'
+#' @export
+#' @examples
+#' \dontrun{
+#' nature_volumes(bow("https://www.nature.com"))
+#' }
+#'
+nature_volumes <- function(polite_bow) {
+  if (missing(polite_bow))
+    stop("Missing polite::bow() session")
+
+  session <- nod(bow = polite_bow,
+                 path = "nature/volumes")
+  volumes <- scrape(session) %>%
+    html_nodes("#volume-decade-list")
 
   tibble(
     volume_key = volumes %>% html_nodes("a") %>% html_attr("href"),
-    date =   volumes %>% html_nodes("time") %>% html_text()
+    date = volumes %>% html_nodes("time") %>% html_text()
   ) %>%
     mutate(year = str_extract(date, "\\d{4}"),
            year = as.integer(year))
 }
 
 
-parse_volume_issues <- function(volume, polite_bow) {
+nature_issues <- function(volume, polite_bow) {
   glue("Parsing {volume} ...") %>% message()
 
   session <- nod(bow = polite_bow, path = volume)
@@ -25,7 +43,7 @@ parse_volume_issues <- function(volume, polite_bow) {
   )
 }
 
-parse_issue_thisweek <- function(issue, file_path, polite_bow) {
+nature_contents <- function(issue, file_path, polite_bow) {
   glue("Parsing {issue} ...") %>% message()
 
   session <- nod(bow = polite_bow, path = issue)
@@ -49,10 +67,16 @@ parse_issue_thisweek <- function(issue, file_path, polite_bow) {
       html_text()
   )
 
-  write_csv(res, file_path, append = file.exists(file_path))
+  if (nrow(res) > 0) {
+    if (missing(file_path)) {
+      return(res)
+    } else {
+      write_csv(res, file_path, append = file.exists(file_path))
+    }
+  }
 }
 
-parse_article <- function(article, file_path, polite_bow) {
+nature_articles <- function(article, file_path, polite_bow) {
   glue("Parsing {article} ...") %>% message()
 
   session <- nod(bow = polite_bow, path = article)
@@ -71,7 +95,6 @@ parse_article <- function(article, file_path, polite_bow) {
 
   doi_txt <- NA_character_
   doi_link <- NA_character_
-
 
   if (str_to_lower(article_title) == "research highlights") {
     # early volumes -----------------------------------------
@@ -138,5 +161,9 @@ parse_article <- function(article, file_path, polite_bow) {
     doi = doi_link
   )
 
-  write_csv(res, file_path, append = file.exists(file_path))
+  if (missing(file_path)) {
+    return(res)
+  } else {
+    write_csv(res, file_path, append = file.exists(file_path))
+  }
 }
