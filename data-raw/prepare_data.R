@@ -49,7 +49,7 @@ nature_highlights <-
   mutate(
     journal = "nature",
     doi = str_remove(doi, "https[:]//doi.org/"),
-    url = str_c("https://www.nature.com/", article_key)
+    url = str_c("https://www.nature.com", article_key)
   ) %>%
   left_join(nature_contents, by = "article_key") %>%
   left_join(nature_issues, by = "issue_key") %>%
