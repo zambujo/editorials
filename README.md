@@ -21,7 +21,6 @@ In total, we compile 12'386 mentions between 2015 and 2020---6'724 *Research Hig
 |citation |string    |extracted citation                |
 |resource |string    |DOI (when available)              |
 
-
 ## License
 
 Distributed under the MIT License.
