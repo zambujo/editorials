@@ -1,11 +1,11 @@
 # Editorial Highlights
 
-A collection of editorial/research highlights from [Nature](https://www.nature.com) and [Science Magazine](https://science.sciencemag.org).
+A collection of highlighted publications in [Nature](https://www.nature.com) and [Science Magazine](https://science.sciencemag.org) between 2005 and 2020.
 
 
 ## Data
 
-Both [Nature](https://www.nature.com) and [Science Magazine](https://science.sciencemag.org) provide weekly mentions of research highlights from other journals.  In total, we compile 12'386 mentions between 2015 and 2020: 6'724 *Research Highlights* from *Nature* and 5'662 *Editorial Choices* from *Science*.
+Both [Nature](https://www.nature.com) and [Science Magazine](https://science.sciencemag.org) highlight research being published in other journals.  In total, 12'386 highlighted publications: 6'724 under the *Research Highlights* in *Nature* and 5'662 under the *Editor's Choices* in *Science Magazine*.
 
 You can download the lastest update as [CSV](./tree/main/data/research_highlights.csv).
 
