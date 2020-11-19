@@ -5,7 +5,7 @@ A collection of highlighted publications in [Nature](https://www.nature.com) and
 
 ## Data
 
-12'386 highlighted publications: 6'724 under the *Research Highlights* in *Nature* and 5'662 under the *Editor's Choices* in *Science Magazine*.
+12'386 highlighted publications: 6'724 under *Research Highlights* in *Nature* and 5'662 under *Editor's Choices* in *Science Magazine*.
 
 You can download the lastest update as [CSV](./tree/main/data/research_highlights.csv).
 
