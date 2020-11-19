@@ -5,9 +5,10 @@ A collection of editorial/research highlights from [Nature](https://www.nature.c
 
 ## Data
 
-Both [Nature](https://www.nature.com) and [Science Magazine](https://science.sciencemag.org) provide weekly mentions of research highlights from other journals. 
+Both [Nature](https://www.nature.com) and [Science Magazine](https://science.sciencemag.org) provide weekly mentions of research highlights from other journals.  In total, we compile 12'386 mentions between 2015 and 2020: 6'724 *Research Highlights* from *Nature* and 5'662 *Editorial Choices* from *Science*.
 
-In total, we compile 12'386 mentions between 2015 and 2020---6'724 *Research Highlights* from *Nature* and 5'662 *Editorial Choices* from *Science*.  You can download the lastest update as [CSV](./tree/main/data/research_highlights.csv).
+You can download the lastest update as [CSV](./tree/main/data/research_highlights.csv).
+
 
 ### Description
 
@@ -20,6 +21,7 @@ In total, we compile 12'386 mentions between 2015 and 2020---6'724 *Research Hig
 |hl_url   |string    |URL of the highlight              |
 |citation |string    |extracted citation                |
 |resource |string    |DOI (when available)              |
+
 
 ## License
 
