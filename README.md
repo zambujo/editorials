@@ -7,7 +7,7 @@ A collection of highlighted publications in [Nature](https://www.nature.com) and
 
 12'386 highlighted publications: 6'724 under *Research Highlights* in *Nature* and 5'662 under *Editor's Choices* in *Science Magazine*.
 
-You can download the lastest update as [CSV](./tree/main/data/research_highlights.csv).
+You can download the lastest update as [CSV](https://github.com/zambujo/editorials/tree/main/data).
 
 
 ### Description
