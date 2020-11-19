@@ -1,8 +1,0 @@
-library(tidyverse)
-library(glue)
-library(rvest)
-library(polite)
-library(conflicted)
-conflict_prefer("pluck", "purrr")
-conflict_prefer("guess_encoding", "readr")
-conflict_prefer("filter", "dplyr")

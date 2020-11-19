@@ -1,87 +1,73 @@
-get_page <- function(addr, obj_polite) {
-  if (missing(obj_polite))
-    stop("Missing polite::bow() session. Try to be polite. Please.")
-
-  session <- nod(bow = obj_polite, path = addr)
-  scrape(session)
-}
-
-return_df <- function(df, csv_file) {
-  tools::assertCondition(missing(df), "Missing tibble.")
-  if (missing(csv_file)) {
-    return(df)
-  } else {
-    write_csv(df, csv_file, append = file.exists(csv_file))
-  }
-}
-
 #' Retrieve the URL of the listed volumes of the journal
 #'
+#' @param addr Relative path to page.
 #' @param polite_bow An HTTP polite::bow session object.
 #' @param csv_path Path to .
-#' @param root_vol Relative path to volumes: `"nature/volumes"` by default.
 #'
 #' @return A tibble with the URL, the date, and the corresponding
 #' year of publication of each volume.
-#'
-#' @export
+#' @family nature scraping function
+#' @name get_nature
 #' @examples
 #' \dontrun{
 #' get_nature_volumes(bow("https://www.nature.com"))
 #' }
 #'
-get_nature_volumes <- function(polite_bow,
-                               csv_path,
-                               root_vol = "nature/volumes") {
-  volumes_html <- get_page(root_vol, polite_bow)
-  issues <- html_nodes(volumes_html, "#volume-decade-list")
+NULL
 
+#' @rdname get_nature
+#' @export
+get_nature_volumes <- function(addr,
+                               polite_bow,
+                               csv_path) {
+  if (missing(addr))
+    addr <- "nature/volumes"
+  volumes_html <- get_page(addr, polite_bow)
+  volumes <- html_nodes(volumes_html, "#volume-decade-list")
   res <- tibble(
-    volume_key = issues %>% html_nodes("a") %>% html_attr("href"),
-    date = issues %>% html_nodes("time") %>% html_text()
+    volume_key = volumes %>%
+      html_nodes("a") %>%
+      html_attr("href"),
+    date = volumes %>%
+      html_nodes("time") %>%
+      html_text()
   )
-
   # cast time
   res <- mutate(res, year = as.numeric(str_extract(date, "\\d{4}")))
-
   return_df(res, csv_path)
 }
 
-get_nature_issues <- function(volume, file_path, polite_bow) {
-  glue("Parsing {volume} ...") %>% message()
-
-  session <- nod(bow = polite_bow, path = volume)
-
-  issues <- scrape(session) %>%
-    html_nodes(".flex-box-item")
-
+#' @rdname get_nature
+#' @export
+get_nature_issues <- function(addr, polite_bow, csv_path) {
+  glue("Parsing {addr} ...") %>% message()
+  issues_html <- get_page(addr, polite_bow)
+  issues <- html_nodes(issues_html, ".flex-box-item")
   res <- tibble(
-    issue_key = issues %>% html_attr("href"),
-    issue_date = issues %>% html_nodes(".text-gray") %>% html_text()
+    issue_key = issues %>%
+      html_attr("href"),
+    issue_date = issues %>%
+      html_nodes(".text-gray") %>%
+      html_text()
   )
-
-  if (missing(file_path)) {
-    return(res)
-  } else {
-    write_csv(res, file_path, append = file.exists(file_path))
-  }
+  return_df(res, csv_path)
 }
 
-get_nature_contents <- function(issue, file_path, polite_bow) {
-  glue("Parsing {issue} ...") %>% message()
+#' @rdname get_nature
+#' @export
+get_nature_contents <- function(addr, polite_bow, csv_path) {
+  glue("Parsing {addr} ...") %>% message()
+  toc_html <- get_page(addr, polite_bow)
 
-  session <- nod(bow = polite_bow, path = issue)
-  session_html <- scrape(session)
-
-  contents <- session_html %>%
+  contents <- toc_html %>%
     html_nodes("#ThisWeek-content")
   if (length(contents) == 0) {
-    contents <- session_html %>%
+    contents <- toc_html %>%
       html_nodes("#ResearchHighlights-section")
   }
 
   res <- tibble(
-    issue_key = issue,
+    issue_key = addr,
     article_key = contents %>%
       html_nodes("a") %>%
       html_attr("href") %>%
@@ -91,26 +77,21 @@ get_nature_contents <- function(issue, file_path, polite_bow) {
       html_text()
   )
 
-  if (nrow(res) > 0) {
-    if (missing(file_path)) {
-      return(res)
-    } else {
-      write_csv(res, file_path, append = file.exists(file_path))
-    }
-  }
+  if (nrow(res) > 0)
+    return_df(res, csv_path)
 }
 
-get_nature_articles <- function(article, file_path, polite_bow) {
-  glue("Parsing {article} ...") %>% message()
+#' @rdname get_nature
+#' @export
+get_nature_articles <- function(addr, polite_bow, csv_path) {
+  glue("Parsing {addr} ...") %>% message()
+  article_html <- get_page(addr, polite_bow)
 
-  session <- nod(bow = polite_bow, path = article)
-  session_html <- scrape(session)
-
-  article_title <- session_html %>%
+  article_title <- article_html %>%
     html_node(".c-article-title, .article-item__title") %>%
     html_text()
 
-  article_subject <- session_html %>%
+  article_subject <- article_html %>%
     html_node(".article-item__subject") %>%
     html_text()
 
@@ -126,14 +107,14 @@ get_nature_articles <- function(article, file_path, polite_bow) {
               "Rights and permissions",
               "About this article",
               "Comments")
-    article_title <- session_html %>%
+    article_title <- article_html %>%
       html_nodes(".c-article-section__title") %>%
       html_text
     stop_at <- which(article_title %in% coda) %>% min()
     ## stop short of journal club
     article_title <- head(article_title, stop_at - 1)
 
-    external_refs <- session_html %>%
+    external_refs <- article_html %>%
       html_nodes(".c-article-section__content")
 
     link_list <- external_refs %>%
@@ -157,7 +138,7 @@ get_nature_articles <- function(article, file_path, polite_bow) {
     doi_link <- pull(df_refs, a)
   } else {
     # later volumes -----------------------------------------
-    external_refs <- session_html %>%
+    external_refs <- article_html %>%
       html_nodes(".c-article-section__content a, .serif")
 
     doi_idx <- external_refs %>%
@@ -178,16 +159,12 @@ get_nature_articles <- function(article, file_path, polite_bow) {
   }
 
   res <- tibble(
-    article_key = article,
+    article_key = addr,
     title = article_title,
     topic = article_subject,
     citation = doi_txt,
     doi = doi_link
   )
 
-  if (missing(file_path)) {
-    return(res)
-  } else {
-    write_csv(res, file_path, append = file.exists(file_path))
-  }
+  return_df(res, csv_path)
 }
