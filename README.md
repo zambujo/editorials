@@ -6,8 +6,6 @@ A collection of 12'386 editorial/research highlights from [Nature](https://www.n
 
 Both [Nature](https://www.nature.com) and [Science Magazine](https://science.sciencemag.org) provide weekly reviews of research highlights from other journals. 
 
-The European Research Council (ERC) provides country statistics freely available online. The numbers refer to both evaluated and granted projects submitted to the ERC. Here, the numbers are provided in CSV for analysis.
-
 ## License
 
 Distributed under the MIT License.
