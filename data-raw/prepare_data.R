@@ -1,5 +1,5 @@
 library("here")
-source(here("R", "packages.R"))
+source(here("R", "common.R"))
 
 
 # science mag -------------------------------------------------------------

@@ -1,11 +1,10 @@
-#' Retrieve the URL of the listed volumes of the journal
+#' Retrieve selected data from a Nature journal URL
 #'
 #' @param addr Relative path to page.
 #' @param polite_bow An HTTP polite::bow session object.
-#' @param csv_path Path to .
+#' @param csv_path Path to CSV file.
 #'
-#' @return A tibble with the URL, the date, and the corresponding
-#' year of publication of each volume.
+#' @return A tibble with scraped data, if `csv_path` is missing.
 #' @family nature scraping function
 #' @name get_nature
 #' @examples
@@ -40,7 +39,6 @@ get_nature_volumes <- function(addr,
 #' @rdname get_nature
 #' @export
 get_nature_issues <- function(addr, polite_bow, csv_path) {
-  glue("Parsing {addr} ...") %>% message()
   issues_html <- get_page(addr, polite_bow)
   issues <- html_nodes(issues_html, ".flex-box-item")
   res <- tibble(
@@ -56,7 +54,6 @@ get_nature_issues <- function(addr, polite_bow, csv_path) {
 #' @rdname get_nature
 #' @export
 get_nature_contents <- function(addr, polite_bow, csv_path) {
-  glue("Parsing {addr} ...") %>% message()
   toc_html <- get_page(addr, polite_bow)
 
   contents <- toc_html %>%
@@ -84,7 +81,6 @@ get_nature_contents <- function(addr, polite_bow, csv_path) {
 #' @rdname get_nature
 #' @export
 get_nature_articles <- function(addr, polite_bow, csv_path) {
-  glue("Parsing {addr} ...") %>% message()
   article_html <- get_page(addr, polite_bow)
 
   article_title <- article_html %>%

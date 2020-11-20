@@ -23,6 +23,12 @@ You can download the lastest update as [CSV](https://raw.githubusercontent.com/z
 |resource |string    |DOI (when available)              |
 
 
+## DIY
+
+1. Rename or remove the CSV files in `data-raw/`
+2. Run `data-raw/harvest_all.R` (takes a few hours)
+3. Run `data-raw/prepare_data.R`
+
 ## License
 
 Distributed under the MIT License.
