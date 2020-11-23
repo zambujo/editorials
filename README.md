@@ -5,7 +5,7 @@ A collection of highlighted publications in [Nature](https://www.nature.com) and
 
 ## Data
 
-12'376 highlighted publications: 6'714 under *Research Highlights* in *Nature* and 5'662 under *Editor's Choices* in *Science Magazine* between 2005 and 2020.
+12'375 highlighted publications: 6'713 under *Research Highlights* in *Nature* and 5'662 under *Editor's Choices* in *Science Magazine* between 2005 and 2020.
 
 You can download the lastest update as [CSV](https://raw.githubusercontent.com/zambujo/editorials/main/data/research_highlights.csv).
 
