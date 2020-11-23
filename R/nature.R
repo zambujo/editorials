@@ -88,11 +88,8 @@ get_nature_articles <- function(addr, polite_bow, csv_path) {
     html_text()
 
   article_subject <- article_html %>%
-    html_node(".article-item__subject") %>%
+    html_node(".c-article-title__super, .article-item__subject") %>%
     html_text()
-
-  if (is.na(article_subject))
-    article_subject <- NA_character_
 
   doi_txt <- NA_character_
   doi_link <- NA_character_
@@ -152,6 +149,15 @@ get_nature_articles <- function(addr, polite_bow, csv_path) {
         subset(doi_idx) %>%
         head(1) ## ! leap of faith
     }
+  }
+
+  if (is.na(article_subject)) {
+    # try to parse subject from title
+    subject_title <- str_split(article_title, ": ", n = 2)
+    article_subject <- map_chr(subject_title, head, 1)
+    article_title <- map_chr(subject_title, tail, 1)
+    if (identical(article_subject, article_title))
+      article_subject <- NA_character_
   }
 
   res <- tibble(
