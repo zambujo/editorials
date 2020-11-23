@@ -35,6 +35,14 @@ get_sciencemag_issues <- function(year, polite_bow, csv_path) {
 get_sciencemag_articles <- function(addr,
                                     polite_bow,
                                     csv_path) {
+  validate_ref <- function(x) {
+    x_wc <-  map_int(str_split(x, " "), length)
+    if (x_wc > 25 | str_detect(x, "^[↵]")) {
+      x <- NA_character_
+    }
+    x
+  }
+
   twil_html <- get_page(addr, polite_bow)
 
   ref_title <- twil_html %>%
@@ -59,18 +67,27 @@ get_sciencemag_articles <- function(addr,
   p_ids <- twil_reference %>%
     html_nodes("p") %>%
     html_attr("id")
-  p_idx <- p_ids %>%
-    str_sub(1, 16) %>%
-    table() %>%
-    cumsum()
+  p_wc <- twil_reference %>%
+    html_nodes("p") %>%
+    html_text() %>%
+    str_split(" ") %>%
+    map_int(length)
+  # expecting summaries w/ more than 60 words
+  p_idx <- 1 + which(p_wc > 60)
   p_path <- glue("#{p_ids[p_idx]}") %>%
     paste(collapse = ", ")
   ref_paper <- twil_reference %>%
     html_nodes(p_path) %>%
-    html_text()
+    html_text() %>%
+    map_chr(validate_ref) %>%
+    na.omit() %>%
+    as.character()
 
   if (length(ref_editor) != length(ref_title))
     ref_editor = rep(NA_character_, length(ref_title))
+
+  if (length(ref_paper) != length(ref_title))
+    ref_paper = rep(NA_character_, length(ref_title))
 
   res <- tibble(
     highlight_key = ref_url,
@@ -79,7 +96,7 @@ get_sciencemag_articles <- function(addr,
     topic = ref_topics,
     ref = ref_paper
   ) %>%
-    mutate(editorial_key = twil_url) %>%
+    mutate(editorial_key = addr) %>%
     select(editorial_key, everything())
 
   return_df(res, csv_path)
