@@ -2352,7 +2352,7 @@ science,2011,Physics,Breaking the Law,https://science.sciencemag.org/content/sci
 science,2011,Climate Science,A Reason to Surge,https://science.sciencemag.org/content/sci/333/6044/803.3,"Proc. Natl. Acad. Sci. U.S.A. 108, 10.1073/pnas.1104772108 (2011)",10.1073/pnas.1104772108
 science,2011,Ecology,A Little Knowledge Could Go a Long Way,https://science.sciencemag.org/content/sci/333/6044/803.4,"Biol Conserv. 144, 10.1016/j.biocon.2011.06.021 (2011)",10.1016/j.biocon.2011.06.021
 science,2011,Biomedicine,A Foothold on Renal Disease,https://science.sciencemag.org/content/sci/333/6044/804.1,"N. Engl. J. Med. 365, 295 (2011)",NA
-science,2011,Biomedicine,A Foothold on Renal Disease,https://science.sciencemag.org/content/sci/333/6044/804.1,,NA
+science,2011,Biomedicine,A Foothold on Renal Disease,https://science.sciencemag.org/content/sci/333/6044/804.1,NA,NA
 science,2011,Development,Don't Stress Out,https://science.sciencemag.org/content/sci/333/6044/804.2,"Biol. Reprod. 85, 10.1095/biolreprod.111.093369 (2011)",10.1095/biolreprod.111.093369
 science,2011,Plant Sciences,Heading Toward the Light,https://science.sciencemag.org/content/sci/333/6044/804.3,"Mol. Syst. Biol. 7, 518 (2011)",NA
 science,2011,Astrophysics,How Stars Explode,https://science.sciencemag.org/content/sci/333/6045/920.1,"Phys. Rev. Lett. 107, 54501 (2011)",NA
@@ -5750,7 +5750,6 @@ nature,2005,NA,Biotechnology: Muscle booster,https://www.nature.com/articles/435
 nature,2005,NA,Cancer: Skin deep,https://www.nature.com/articles/4351006a,Nature Genet. doi:10.1038/ng1586 (2005),NA
 nature,2005,NA,Climate Change: Watery world,https://www.nature.com/articles/4351006a,"Science 308, 1772–1774 (2005)",NA
 nature,2005,NA,Animal behaviour: Bad vibrations,https://www.nature.com/articles/4351006a,Anim. Behav. doi:10.1016/j.anbehav.2004.09.019 (2005),NA
-nature,2005,NA,Journal Club,https://www.nature.com/articles/4351006a,Christopher Miller,NA
 nature,2005,NA,Molecular biology: DNA unpacked,https://www.nature.com/articles/4351140a,"Cell 121, 873–885 (2005)",NA
 nature,2005,NA,Biotechnology: Stocky in stature,https://www.nature.com/articles/4351140a,Science doi: 10.1126/science.1113373 (2005),NA
 nature,2005,NA,Microbial genetics: Saints and sinners,https://www.nature.com/articles/4351140a,Nature Biotechnol. doi:10.1038/nbt1110 (2005),NA
@@ -5778,7 +5777,6 @@ nature,2005,NA,Cancer: Healing hijacked,https://www.nature.com/articles/435250a,
 nature,2005,NA,Hydrodynamics: Skipping stones,https://www.nature.com/articles/435250a,"Phys. Rev. Lett. 94, 174501 (2005)",NA
 nature,2005,NA,Chemistry: Complex proteins,https://www.nature.com/articles/435250a,J. Am. Chem. Soc. doi: 10.1021/ja050304r (2005),NA
 nature,2005,NA,Climate change: Fish scarper up north,https://www.nature.com/articles/435250a,Science doi:10.1126/science.1111322 (2005),NA
-nature,2005,NA,Journal Club,https://www.nature.com/articles/435250a,Peter Dayan,http://www.math.nyu.edu/~ebrown/papers/simple_networks.pdf
 nature,2005,NA,Particle physics: Lattice work,https://www.nature.com/articles/435388a,"Phys. Rev. Lett. 94, 172001 (2005)",NA
 nature,2005,NA,Chemistry: Homeric electrons,https://www.nature.com/articles/435388a,Angew. Chem. doi: 10.1002/anie.200500541 (2005),NA
 nature,2005,NA,Plant development: Surviving the split,https://www.nature.com/articles/435388a,Plant Cell doi:10.1105/tpc.105.032185 (2005),NA
@@ -5790,7 +5788,6 @@ nature,2005,NA,Nonlinear physics: Black magic,https://www.nature.com/articles/43
 nature,2005,NA,Quantum dots: Light boxes,https://www.nature.com/articles/435388a,"Science 308, 1158–1161 (2005)",NA
 nature,2005,NA,Developmental Biology: The right slant,https://www.nature.com/articles/435388a,"Cell 121, 633–644 (2005)",NA
 nature,2005,NA,Cell biology: Damp feeling,https://www.nature.com/articles/435388a,EMBO J. doi:10.1038/sj.emboj.7600668 (2005),NA
-nature,2005,NA,Journal Club,https://www.nature.com/articles/435388a,Thomas F. Stocker,NA
 nature,2005,NA,Quantum physics: Dancing vortices,https://www.nature.com/articles/435540a,"Phys. Rev. Lett. 94, 190401 (2005)",NA
 nature,2005,NA,Neuroscience: Patch work,https://www.nature.com/articles/435540a,Nature Neurosci. doi: 10.1038/nn1474,NA
 nature,2005,NA,Malaria: Caught in the act,https://www.nature.com/articles/435540a,"PLoS Biol. 3, 192 (2005)",NA
@@ -5801,7 +5798,6 @@ nature,2005,NA,Genetics: The bald truth,https://www.nature.com/articles/435540a,
 nature,2005,NA,RNA interference: Silent assassin,https://www.nature.com/articles/435540a,Nature Biotechnol. doi:10.1038/nbt1101 (2005),NA
 nature,2005,NA,Radioactivity: Zinc's double decay,https://www.nature.com/articles/435540a,Preprint nucl-ex/0505016 at http://arxiv.org (2005),http://arxiv.org
 nature,2005,NA,Baby blues,https://www.nature.com/articles/435540a,Proc. R. Soc. Lond. B doi:10.1098/rspb.2005.3057 (2005); Biol. Lett. doi:10.1098/rsbl.2004.0274 (2005),NA
-nature,2005,NA,Journal Club,https://www.nature.com/articles/435540a,Philippe Janvier,10.1038/46909
 nature,2005,NA,Genetics: Barely there,https://www.nature.com/articles/435716a,Science doi:10.1126/science.1113485 (2005),NA
 nature,2005,NA,Animal behaviour: Fruitless frolics,https://www.nature.com/articles/435716a,"Cell 121, 785–794 (2005)",NA
 nature,2005,NA,Neurobiology: Within sight,https://www.nature.com/articles/435716a,Neuron doi: 10.1016/j.neuron.2005.04.023 (2005),NA
@@ -5813,7 +5809,6 @@ nature,2005,NA,Physics: Speed trap,https://www.nature.com/articles/435716a,"Phys
 nature,2005,NA,Palaeontology: Tyrannosaurus sex,https://www.nature.com/articles/435716a,"Science 308, 1456–1459 (2005)",NA
 nature,2005,NA,Materials: Going soft,https://www.nature.com/articles/435716a,"Phys. Rev. Lett. 94, 205502 (2005)",NA
 nature,2005,NA,Trick of the light,https://www.nature.com/articles/435716a,Preprint astro-ph/0505484 at http://arxiv.org (2005),http://arxiv.org
-nature,2005,NA,Journal Club,https://www.nature.com/articles/435716a,Luigi Piro,NA
 nature,2005,NA,Materials: Foul play,https://www.nature.com/articles/435858a,"J. Am. Chem. Soc. 127, 7972–7973 (2005)",NA
 nature,2005,NA,Immunology: Poxy antibodies,https://www.nature.com/articles/435858a,Nature Med. doi:10.1038/nm1261 (2005),NA
 nature,2005,NA,Nanotechnology: Going for gold,https://www.nature.com/articles/435858a,J. Am. Chem. Soc. doi:10.1021/ja042621o (2005),NA
@@ -5824,7 +5819,6 @@ nature,2005,NA,Viral transport: Stowaways,https://www.nature.com/articles/435858
 nature,2005,NA,West nile disease: Blood wedding,https://www.nature.com/articles/435858a,Proc. Natl Acad. Sci. USA doi:10.1073/pnas.0503835102 (2005),NA
 nature,2005,NA,Data storage: Pillar talk,https://www.nature.com/articles/435858a,"J. Appl. Phys. 97, 103910 (2005)",NA
 nature,2005,NA,Culture shock,https://www.nature.com/articles/435858a,Nature Med. doi:10.1038/nm1268 (2005); Proc. Natl Acad. Sci. USA doi:10.1073/pnas.0503596102 (2005); Science doi 10.1126/science.1114016 (2005),NA
-nature,2005,NA,Journal Club,https://www.nature.com/articles/435858a,John Brookfield,NA
 nature,2005,NA,Drug discovery: Screen for promiscuity,https://www.nature.com/articles/436004a,Nature Chem. Biol. doi: 10.1038/nchembio718 (2005),NA
 nature,2005,NA,Quantum physics: Time's up,https://www.nature.com/articles/436004a,"Phys. Rev. Lett. 94, 230401 (2005)",NA
 nature,2005,NA,Molecular biology: Enlightened proteins,https://www.nature.com/articles/436004a,"Chem. Biol. 12, 685–693 (2005)",NA
@@ -5976,7 +5970,6 @@ nature,2005,NA,Medicine: A Good Shot,https://www.nature.com/articles/437598a,"J.
 nature,2005,NA,Cell Biology: Bound by a Ring,https://www.nature.com/articles/437598a,"Cell 122, 849–860 (2005)",NA
 nature,2005,NA,Biochemistry: Stable Mate,https://www.nature.com/articles/437598a,Nature Chem. Biol. doi:10.1038/nchembio734 (2005),NA
 nature,2005,NA,Space science: To infinity and beyond,https://www.nature.com/articles/437598a,"Science 309, 2017–2020; 2020–2024; 2025–2027; 2027–2029 (2005)",NA
-nature,2005,NA,Journal Club,https://www.nature.com/articles/437598a,Patrick Newell,NA
 nature,2005,NA,Neuroscience: Conscious connections,https://www.nature.com/articles/437792a,"Science 309, 2228–2232 (2005)",NA
 nature,2005,NA,Drug discovery: Cravatt makes twin ties,https://www.nature.com/articles/437792a,Nature Biotechnol. doi:10.1038/nbt1149 (2005),NA
 nature,2005,NA,Animal behaviour: Smells fishy,https://www.nature.com/articles/437792a,Nature Chem. Biol. doi:10.1038/nchembio739 (2005),NA
@@ -6060,7 +6053,6 @@ nature,2005,NA,Stem cells: Grow your own liver,https://www.nature.com/articles/4
 nature,2005,NA,Cell biology: Wrinkles in theory of ageing,https://www.nature.com/articles/438534a,"Cell 123, 655–667 (2005)",NA
 nature,2005,NA,Molecular biology: Evasion tactics,https://www.nature.com/articles/438534a,"J. Exp. Med. 202, 1319–1325 (2005)",NA
 nature,2005,NA,Astrophysics: Expanding horizons,https://www.nature.com/articles/438534a,Astron. Astrophys. doi:10.1051/0004-6361:20054185 (2005),NA
-nature,2005,NA,Journal Club,https://www.nature.com/articles/438534a,Guy Salvesen,NA
 nature,2005,NA,Biology: Amyloid advantage,https://www.nature.com/articles/438714a,PLoS Biol. doi:10.1371/journal.pbio.0040006 (2006),NA
 nature,2005,NA,Cell biology: Divide and conquer,https://www.nature.com/articles/438714a,"Cell 123, 787–801 (2005)",NA
 nature,2005,NA,Computer science: Virus buster,https://www.nature.com/articles/438714a,Nature Phys. doi:10.1038/nphys177 (2005),NA
@@ -6070,7 +6062,6 @@ nature,2005,NA,Organic chemistry: Get shorty,https://www.nature.com/articles/438
 nature,2005,NA,Cell biology: Protein shake-up,https://www.nature.com/articles/438714a,"J. Cell Biol. 171, 717–728 (2005)",NA
 nature,2005,NA,Optoelectronics: A little light on the matter,https://www.nature.com/articles/438714a,NanoLetters doi:10.1021/nl051811+ (2005),NA
 nature,2005,NA,Flavour of the week,https://www.nature.com/articles/438714a,"Science 310, 1495–1499 (2005)",NA
-nature,2005,NA,Journal Club,https://www.nature.com/articles/438714a,"H. Eugene Stanley Boston University, Massachusetts",NA
 nature,2005,NA,Photonics: Green light for white light,https://www.nature.com/articles/438892a,"Adv. Mat. 17, 2974–2978 (2005); Appl. Phys. Lett. 87, 231901 (2005)",NA
 nature,2005,NA,Immunology: Making mice tweak,https://www.nature.com/articles/438892a,"Cell 123, 931–944 (2005)",NA
 nature,2005,NA,Chemistry: Double delivery,https://www.nature.com/articles/438892a,J. Am. Chem. Soc. doi:10.1021/ja056841t (2005),NA
@@ -6490,7 +6481,6 @@ nature,2006,NA,Animal behaviour: On the scent,https://www.nature.com/articles/44
 nature,2006,NA,Cell biology: Assessing affinity,https://www.nature.com/articles/443726a,Nature Chem. Biol. doi:10.1038/nchembio823 (2006),NA
 nature,2006,NA,Immunology: Enzymes tell good from bad,https://www.nature.com/articles/443726a,Science doi:10.1126/science.1132998 (2006),NA
 nature,2006,NA,Colloids: Silica soufflé,https://www.nature.com/articles/443726a,Nature Mater. doi:10.1038/nmat1757 (2006),NA
-nature,2006,NA,Journal Club,https://www.nature.com/articles/443726a,Norman H. Sleep,NA
 nature,2006,NA,Planetary science: Frosted Earths,https://www.nature.com/articles/443886a,"Astrophys. J. 650, L139–L142 (2006)",NA
 nature,2006,NA,Drug discovery: Target practice,https://www.nature.com/articles/443886a,"Proc. Natl Acad. Sci. USA 103, 15422–15427 (2006)",NA
 nature,2006,NA,Stem cells: Grown naturally,https://www.nature.com/articles/443886a,Nature Biotechnol. doi:10.1038/nbt1259 (2006),NA

@@ -99,14 +99,14 @@ get_nature_articles <- function(addr, polite_bow, csv_path) {
 
   if (str_to_lower(article_title) == "research highlights") {
     # early volumes -----------------------------------------
-    coda <- c("Journal club",
-              "Rights and permissions",
-              "About this article",
-              "Comments")
+    coda <- c("journal club",
+              "rights and permissions",
+              "about this article",
+              "comments")
     article_title <- article_html %>%
       html_nodes(".c-article-section__title") %>%
       html_text
-    stop_at <- which(article_title %in% coda) %>% min()
+    stop_at <- which(str_to_lower(article_title) %in% coda) %>% min()
     ## stop short of journal club
     article_title <- head(article_title, stop_at - 1)
 

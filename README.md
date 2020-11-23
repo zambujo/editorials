@@ -1,11 +1,11 @@
 # Editorial Highlights
 
-A collection of highlighted publications in [Nature](https://www.nature.com) and [Science Magazine](https://science.sciencemag.org) between 2005 and 2020.
+A collection of highlighted publications in [Nature](https://www.nature.com) and [Science Magazine](https://science.sciencemag.org).
 
 
 ## Data
 
-12'386 highlighted publications: 6'724 under *Research Highlights* in *Nature* and 5'662 under *Editor's Choices* in *Science Magazine*.
+12'376 highlighted publications: 6'714 under *Research Highlights* in *Nature* and 5'662 under *Editor's Choices* in *Science Magazine* between 2005 and 2020.
 
 You can download the lastest update as [CSV](https://raw.githubusercontent.com/zambujo/editorials/main/data/research_highlights.csv).
 
