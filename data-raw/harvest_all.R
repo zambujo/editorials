@@ -4,10 +4,30 @@ source(here("R", "nature.R"))
 source(here("R", "sciencemag.R"))
 
 agent <- as_tibble(read.dcf(here("DESCRIPTION"))) %>% pull(URL)
-
 ##  initial collection :
 time_period <- 2005:2020
 
+
+# science magazine --------------------------------------------------------
+session_bow <- bow(url = "https://science.sciencemag.org",
+                   user_agent = glue("<{agent}/>"))
+# issues ...
+time_period %>%
+  walk(
+    get_sciencemag_issues,
+    polite_bow = session_bow,
+    csv_path = here("data-raw", "sciencemag-issues.csv")
+  )
+
+# articles ...
+read_csv(here("data-raw", "sciencemag-issues.csv")) %>%
+  mutate(archive_links = str_c(issue_key, "/twil")) %>%
+  pull(archive_links) %>%
+  walk(
+    get_sciencemag_articles,
+    polite_bow = session_bow,
+    csv_path = here("data-raw", "sciencemag-highlights.csv")
+  )
 
 # nature ------------------------------------------------------------------
 session_bow <- bow(url = "https://www.nature.com",
@@ -41,26 +61,4 @@ read_csv(here("data-raw", "nature-contents.csv")) %>%
     get_nature_articles,
     polite_bow = session_bow,
     csv_path = here("data-raw", "nature-highlights.csv")
-  )
-
-
-# science magazine --------------------------------------------------------
-session_bow <- bow(url = "https://science.sciencemag.org",
-                   user_agent = glue("<{agent}/>"))
-# issues ...
-time_period %>%
-  walk(
-    get_sciencemag_issues,
-    polite_bow = session_bow,
-    csv_path = here("data-raw", "sciencemag-issues.csv")
-  )
-
-# articles ...
-read_csv(here("data-raw", "sciencemag-issues.csv")) %>%
-  mutate(archive_links = str_c(issue_key, "/twil")) %>%
-  pull(archive_links) %>%
-  walk(
-    get_sciencemag_articles,
-    polite_bow = session_bow,
-    csv_path = here("data-raw", "sciencemag-highlights.csv")
   )
