@@ -14,11 +14,15 @@ Depends:
     conflicted,
     glue,
     here,
+    httr,
+    jsonlite,
     polite,
     rvest,
-    tidyverse
+    tidyverse,
+    urltools
 Suggests:
-    xml2
+    xml2,
+    testthat
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/zambujo/editorials

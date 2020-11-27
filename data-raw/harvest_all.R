@@ -3,10 +3,8 @@ source(here("R", "common.R"))
 source(here("R", "nature.R"))
 source(here("R", "sciencemag.R"))
 
-agent <- as_tibble(read.dcf(here("DESCRIPTION"))) %>% pull(URL)
 ##  initial collection :
 time_period <- 2005:2020
-
 
 # science magazine --------------------------------------------------------
 session_bow <- bow(url = "https://science.sciencemag.org",
