@@ -11,6 +11,7 @@ Authors@R:
 Description: Parsing and compiling editorial highlights from Science and Nature.
 License: MIT
 Depends: 
+    config,
     conflicted,
     glue,
     here,

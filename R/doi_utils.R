@@ -41,10 +41,10 @@ resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
 
 
 get_cr_data <- function(doi, csv_path, verbose = TRUE) {
-  agent <- as_tibble(read.dcf(here("DESCRIPTION"))) %>% pull(URL)
+  agent <- settings$agent
   url <-
     sprintf("https://api.crossref.org/v1/works/%s", url_encode(doi))
-  resp <- GET(url, add_headers("user-agent" = glue("<{agent}/>")))
+  resp <- GET(url, add_headers("user-agent" = settings$agent))
   res <- tibble(
     doi,
     cr_title = NA_character_,

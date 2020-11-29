@@ -4,11 +4,11 @@ source(here("R", "nature.R"))
 source(here("R", "sciencemag.R"))
 
 ##  initial collection :
-time_period <- 2005:2020
+time_period <- seq(settings$start_year, settings$end_year)
 
 # science magazine --------------------------------------------------------
 session_bow <- bow(url = "https://science.sciencemag.org",
-                   user_agent = glue("<{agent}/>"))
+                   user_agent = settings$agent)
 # issues ...
 time_period %>%
   walk(
@@ -29,7 +29,7 @@ read_csv(here("data-raw", "sciencemag-issues.csv")) %>%
 
 # nature ------------------------------------------------------------------
 session_bow <- bow(url = "https://www.nature.com",
-                   user_agent = glue("<{agent}/>"))
+                   user_agent = settings$agent)
 # volumes ...
 nature_volumes <- get_nature_volumes(polite_bow = session_bow) %>%
   filter(year %in% time_period)
