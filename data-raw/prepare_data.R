@@ -73,15 +73,15 @@ bind_rows(science_highlights,
   write_csv(here("data", "research_highlights.csv"))
 
 highlights <- read_csv(here("data", "research_highlights.csv"))
-df <- highlights %>%
-  mutate(
-    citation = str_remove(citation, "doi[:][[:space:]]?"),
-    cit_journal = str_extract(citation, "([A-Z][A-Za-z.[:space:]]+)+"),
-    cit_issue = str_extract(citation, "[0-9]+[,][[:space:]][0-9–]+"),
-    cit_year = str_extract(citation, "[(]\\d{4}[)]"),
-    cit_journal = str_squish(cit_journal)
-  )
 
+# df <- highlights %>%
+#   mutate(
+#     citation = str_remove(citation, "doi[:][[:space:]]?"),
+#     cit_journal = str_extract(citation, "([A-Z][A-Za-z.[:space:]]+)+"),
+#     cit_issue = str_extract(citation, "[0-9]+[,][[:space:]][0-9–]+"),
+#     cit_year = str_extract(citation, "[(]\\d{4}[)]"),
+#     cit_journal = str_squish(cit_journal)
+#   )
 
 # DOIs --------------------------------------------------------------------
 
