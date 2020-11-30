@@ -10,7 +10,8 @@ conflict_prefer("pluck", "purrr")
 conflict_prefer("guess_encoding", "readr")
 conflict_prefer("filter", "dplyr")
 
-agent <- as_tibble(read.dcf(here("DESCRIPTION"))) %>% pull(URL)
+
+settings <- config::get()
 doi_regex <- "\\b10[.][[:digit:]]{4,9}[/][[:graph:]]+\\b"
 
 roger_that <- function(x, msg = "Parsing") {

@@ -109,7 +109,7 @@ short_dois <- highlights %>%
   flatten_chr()
 
 session_bow <- bow(url = "http://doi.org",
-                   user_agent = glue("<{agent}/>"))
+                   user_agent = settings$agent)
 
 walk(
   short_dois,
