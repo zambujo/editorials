@@ -1,144 +1,195 @@
 library("here")
-source(here("R", "common.R"))
-source(here("R", "doi_utils.R"))
+source(here::here("R", "common.R"))
+source(here::here("R", "doi_utils.R"))
 
-# sciencemag:
+if (FALSE) {
+  # sciencemag:
 
-science_issues <-
-  read_csv(here("data-raw", "sciencemag-issues.csv"))
+  science_issues <-
+    readr::read_csv(here::here("data-raw", "sciencemag-issues.csv"))
 
-# TODO: https://github.com/zambujo/editorials/issues/17
-science_highlights <-
-  read_csv(here("data-raw", "sciencemag-highlights.csv")) %>%
-  ## un-nest or "explode" multiple references
-  mutate(ref = str_split(ref, "(?<=[[:space:]][(][12][0-9]{3}[)][;])")) %>%
-  unnest(ref) %>%
-  mutate(
-    ref = str_squish(ref),
-    ref = str_remove(ref, "[;.]$"),
-    doi = str_extract(ref, doi_regex),
-    journal = "science",
-    issue_key = str_remove(editorial_key, "/twil"),
-    url_rel = str_remove(highlight_key, "[.]full[.]html"),
-    url = str_c("https://science.sciencemag.org/content", url_rel)
-  ) %>%
-  ## add year of the editorial highlight
-  left_join(science_issues, by = "issue_key") %>%
-  select(
-    journal,
-    hl_year = issue_year,
-    hl_topic = topic,
-    hl_title = title,
-    hl_url = url,
-    citation = ref,
-    resource = doi
+  # TODO: https://github.com/zambujo/editorials/issues/17
+  science_highlights <-
+    readr::read_csv(here::here("data-raw", "sciencemag-highlights.csv")) %>%
+    ## un-nest or "explode" multiple references
+    dplyr::mutate(ref = stringr::str_split(ref, "(?<=[[:space:]][(][12][0-9]{3}[)][;])")) %>%
+    tidyr::unnest(ref) %>%
+    dplyr::mutate(
+      ref = stringr::str_squish(ref),
+      ref = stringr::str_remove(ref, "[;.]$"),
+      doi = stringr::str_extract(ref, doi_regex),
+      journal = "science",
+      issue_key = stringr::str_remove(editorial_key, "/twil"),
+      url_rel = stringr::str_remove(highlight_key, "[.]full[.]html"),
+      url = stringr::str_c("https://science.sciencemag.org/content", url_rel)
+    ) %>%
+    ## add year of the editorial highlight
+    dplyr::left_join(science_issues, by = "issue_key") %>%
+    dplyr::select(
+      journal,
+      hl_year = issue_year,
+      hl_topic = topic,
+      hl_title = title,
+      hl_url = url,
+      citation = ref,
+      resource = doi
+    )
+
+
+  # nature:
+
+  nature_issues <-
+    readr::read_csv(here::here("data-raw", "nature-issues.csv")) %>%
+    dplyr::mutate(year = stringr::str_extract(issue_date, "\\d{4}"),
+                  year = as.numeric(year))
+
+  nature_contents <-
+    readr::read_csv(here::here("data-raw", "nature-contents.csv"))
+
+  nature_highlights <-
+    readr::read_csv(here::here("data-raw", "nature-highlights.csv")) %>%
+    dplyr::mutate(
+      journal = "nature",
+      doi = stringr::str_remove(doi, "https[:]//doi.org/"),
+      url = stringr::str_c("https://www.nature.com", article_key)
+    ) %>%
+    dplyr::left_join(nature_contents, by = "article_key") %>%
+    dplyr::left_join(nature_issues, by = "issue_key") %>%
+    dplyr::select(
+      journal,
+      hl_year = year,
+      hl_topic = topic,
+      hl_title = title,
+      hl_url = url,
+      citation,
+      resource = doi
+    )
+
+
+  # science + nature: combine & export
+
+  dplyr::bind_rows(science_highlights,
+            nature_highlights) %>%
+    dplyr::arrange(hl_url) %>%
+    readr::write_csv(here::here("data", "research_highlights.csv"))
+
+  highlights <-
+    readr::read_csv(here::here("data", "research_highlights.csv"))
+
+  # TODO: https://github.com/zambujo/editorials/issues/16
+  df <- highlights %>%
+    dplyr::mutate(
+      citation = stringr::str_remove(citation, "doi[:][[:space:]]?"),
+      cit_journal = stringr::str_extract(citation, "([A-Z][A-Za-z.[:space:]]+)+"),
+      cit_issue = stringr::str_extract(citation, "[0-9]+[,][[:space:]][0-9–]+"),
+      cit_year = stringr::str_extract(citation, "[(]\\d{4}[)]"),
+      cit_journal = stringr::str_squish(cit_journal)
+    )
+
+  # DOIs --------------------------------------------------------------------
+
+  full_dois <-
+    readr::read_csv(here::here("data-raw", "full_dois.csv"))
+
+  empty_dois <-
+    full_dois %>% dplyr::filter(is.na(cr_title)) %>% dplyr::pull(doi)
+
+  dois <- highlights %>%
+    dplyr::distinct(resource) %>%
+    tidyr::drop_na() %>%
+    dplyr::filter(stringr::str_detect(resource, doi_regex)) %>%
+    dplyr::mutate(
+      resource = stringr::sststr_extract(resource, doi_regex),
+      resource = stringr::str_to_lower(resource),
+      resource = stringr::str_trim(resource)
+    ) %>%
+    dplyr::anti_join(full_dois, by = c("resource" = "doi")) %>%
+    dplyr::pull()
+
+  dois <- c(dois, empty_dois)
+
+  purrr::walk(dois,
+              get_cr_data,
+              csv_path = here::here("data-raw", "new_full_dois.csv"))
+
+  short_dois <-
+    highlights %>%
+    dplyr::distinct(resource) %>%
+    tidyr::drop_na() %>%
+    dplyr::filter(stringr::str_detect(resource, "doi[.]org")) %>%
+    dplyr::filter(!stringr::str_detect(resource, doi_regex)) %>%
+    dplyr::mutate(
+      resource = stringr::str_to_lower(resource),
+      resource = stringr::str_trim(resource),
+      resource = stringr::str_split(resource, "/"),
+      resource = purrr::map(resource, tail, n = 1),
+      resource = purrr::flatten_chr(resource)
+    ) %>%
+    dplyr::pull()
+
+  session_bow <- polite::bow(url = "http://doi.org",
+                             user_agent = settings$agent)
+
+  purrr::walk(
+    short_dois,
+    resolve_shortdoi,
+    polite_bow = session_bow,
+    csv_path = here::here("data-raw", "short_dois.csv")
   )
 
 
-# nature:
+  # cr metadata for resolved shortDOIs --------------------------------------
 
-nature_issues <-
-  read_csv(here("data-raw", "nature-issues.csv")) %>%
-  mutate(year = str_extract(issue_date, "\\d{4}"),
-         year = as.numeric(year))
+  resolved_dois <-
+    readr::read_csv(here::here("data-raw", "short_dois.csv")) %>%
+    tidyr::drop_na() %>%
+    dplyr::mutate(
+      doi = stringr::str_remove(doi, "^doi:"),
+      doi = stringr::str_to_lower(doi),
+      doi = stringr::str_trim(doi)
+    )
 
-nature_contents <-
-  read_csv(here("data-raw", "nature-contents.csv"))
-
-nature_highlights <-
-  read_csv(here("data-raw", "nature-highlights.csv")) %>%
-  mutate(
-    journal = "nature",
-    doi = str_remove(doi, "https[:]//doi.org/"),
-    url = str_c("https://www.nature.com", article_key)
-  ) %>%
-  left_join(nature_contents, by = "article_key") %>%
-  left_join(nature_issues, by = "issue_key") %>%
-  select(
-    journal,
-    hl_year = year,
-    hl_topic = topic,
-    hl_title = title,
-    hl_url = url,
-    citation,
-    resource = doi
-  )
+  resolved_dois %>%
+    readr::write_csv(here::here("data", "shortdoi.csv"))
 
 
-# science + nature: combine & export
+  # combine data and export -------------------------------------------------
 
-bind_rows(science_highlights,
-          nature_highlights) %>%
-  arrange(hl_url) %>%
-  write_csv(here("data", "research_highlights.csv"))
+  resolved_dois %>%
+    dplyr::pull(doi) %>%
+    purrr::walk(get_cr_data, csv_path = here::here("data-raw", "full_dois.csv"))
 
-highlights <- read_csv(here("data", "research_highlights.csv"))
+  full_dois <-
+    readr::read_csv(here::here("data-raw", "full_dois.csv")) %>%
+    dplyr::distinct(doi, .keep_all = TRUE) %>%
+    dplyr::arrange(cr_year) %>%
+    dplyr::mutate(cr_year = stringr::str_sub(cr_year, 1, 4)) %>%
+    readr::write_csv(here::here("data", "crossref.csv"))
 
-# df <- highlights %>%
-#   mutate(
-#     citation = str_remove(citation, "doi[:][[:space:]]?"),
-#     cit_journal = str_extract(citation, "([A-Z][A-Za-z.[:space:]]+)+"),
-#     cit_issue = str_extract(citation, "[0-9]+[,][[:space:]][0-9–]+"),
-#     cit_year = str_extract(citation, "[(]\\d{4}[)]"),
-#     cit_journal = str_squish(cit_journal)
-#   )
+}
 
-# DOIs --------------------------------------------------------------------
-
+highlights <-
+  readr::read_csv(here::here("data", "research_highlights.csv"))
+full_dois <-
+  readr::read_csv(here::here("data-raw", "full_dois.csv"))
+empty_dois <-
+  full_dois %>%
+  dplyr::filter(is.na(cr_title)) %>%
+  dplyr::pull(doi)
 dois <- highlights %>%
-  distinct(resource) %>%
-  drop_na() %>%
-  filter(str_detect(resource, doi_regex)) %>%
-  pull() %>%
-  str_to_lower() %>%
-  str_trim()
+  dplyr::distinct(resource) %>%
+  tidyr::drop_na() %>%
+  dplyr::filter(stringr::str_detect(resource, doi_regex)) %>%
+  dplyr::mutate(
+    resource = stringr::str_extract(resource, doi_regex),
+    resource = stringr::str_to_lower(resource),
+    resource = stringr::str_trim(resource)
+  ) %>%
+  dplyr::anti_join(full_dois, by = c("resource" = "doi")) %>%
+  dplyr::pull()
 
-walk(dois,
-     get_cr_data,
-     csv_path = here("data-raw", "full_dois.csv"))
+dois <- c(dois, empty_dois)
 
-short_dois <- highlights %>%
-  distinct(resource) %>%
-  drop_na() %>%
-  filter(!str_detect(resource, doi_regex)) %>%
-  pull() %>%
-  str_to_lower() %>%
-  str_trim() %>%
-  str_split("/") %>%
-  map(tail, n = 1) %>%
-  flatten_chr()
-
-session_bow <- bow(url = "http://doi.org",
-                   user_agent = settings$agent)
-
-walk(
-  short_dois,
-  resolve_shortdoi,
-  polite_bow = session_bow,
-  csv_path = here("data-raw", "short_dois.csv")
-)
-
-
-# cr metadata for resolved shortDOIs --------------------------------------
-
-resolved_dois <- read_csv(here("data-raw", "short_dois.csv")) %>%
-  drop_na() %>%
-  mutate(doi = str_remove(doi, "^doi:"),
-         doi = str_to_lower(doi),
-         doi = str_trim(doi))
-
-resolved_dois %>%
-  write_csv(here("data", "shortdoi.csv"))
-
-
-# combine data and export -------------------------------------------------
-
-resolved_dois %>%
-  pull(doi) %>%
-  walk(get_cr_data, csv_path = here("data-raw", "full_dois.csv"))
-
-full_dois <- read_csv(here("data-raw", "full_dois.csv")) %>%
-  distinct(doi, .keep_all = TRUE) %>%
-  arrange(cr_year) %>%
-  mutate(cr_year = str_sub(cr_year, 1, 4)) %>%
-  write_csv(here("data", "crossref.csv"))
+purrr::walk(dois,
+            get_cr_data,
+            csv_path = here::here("data-raw", "new_full_dois.csv"))

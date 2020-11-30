@@ -8,22 +8,24 @@ Authors@R:
            role = c("aut", "cre"),
            email = "joao.martins@gmx.net",
            comment = c(ORCID = "0000-0001-7961-4280"))
-Description: Parsing and compiling editorial highlights from Science and Nature.
+Description: A compendium for scraping, parsing, and compiling 
+weekly editorial highlights from Science and Nature.
 License: MIT
 Depends: 
     config,
-    conflicted,
     glue,
     here,
     httr,
     jsonlite,
     polite,
     rvest,
+    tibble,
     tidyverse,
-    urltools
+    urltools,
+    xml2
 Suggests:
-    xml2,
-    testthat
+    testthat,
+    knitr
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/zambujo/editorials

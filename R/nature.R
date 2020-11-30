@@ -22,17 +22,18 @@ get_nature_volumes <- function(addr,
   if (missing(addr))
     addr <- "nature/volumes"
   volumes_html <- get_page(addr, polite_bow)
-  volumes <- html_nodes(volumes_html, "#volume-decade-list")
-  res <- tibble(
+  volumes <- rvest::html_nodes(volumes_html, "#volume-decade-list")
+  res <- tibble::tibble(
     volume_key = volumes %>%
-      html_nodes("a") %>%
-      html_attr("href"),
+      rvest::html_nodes("a") %>%
+      rvest::html_attr("href"),
     date = volumes %>%
-      html_nodes("time") %>%
-      html_text()
+      rvest::html_nodes("time") %>%
+      rvest::html_text()
   )
   # cast time
-  res <- mutate(res, year = as.numeric(str_extract(date, "\\d{4}")))
+  res <- dplyr::mutate(res,
+                       year = as.numeric(stringr::str_extract(date, "\\d{4}")))
   return_df(res, csv_path)
 }
 
@@ -40,13 +41,13 @@ get_nature_volumes <- function(addr,
 #' @export
 get_nature_issues <- function(addr, polite_bow, csv_path) {
   issues_html <- get_page(addr, polite_bow)
-  issues <- html_nodes(issues_html, ".flex-box-item")
-  res <- tibble(
+  issues <- rvest::html_nodes(issues_html, ".flex-box-item")
+  res <- tibble::tibble(
     issue_key = issues %>%
-      html_attr("href"),
+      rvest::html_attr("href"),
     issue_date = issues %>%
-      html_nodes(".text-gray") %>%
-      html_text()
+      rvest::html_nodes(".text-gray") %>%
+      rvest::html_text()
   )
   return_df(res, csv_path)
 }
@@ -57,21 +58,21 @@ get_nature_contents <- function(addr, polite_bow, csv_path) {
   toc_html <- get_page(addr, polite_bow)
 
   contents <- toc_html %>%
-    html_nodes("#ThisWeek-content")
+    rvest::html_nodes("#ThisWeek-content")
   if (length(contents) == 0) {
     contents <- toc_html %>%
-      html_nodes("#ResearchHighlights-section")
+      rvest::html_nodes("#ResearchHighlights-section")
   }
 
-  res <- tibble(
+  res <- tibble::tibble(
     issue_key = addr,
     article_key = contents %>%
-      html_nodes("a") %>%
-      html_attr("href") %>%
-      str_subset("^/articles/"),
+      rvest::html_nodes("a") %>%
+      rvest::html_attr("href") %>%
+      stringr::str_subset("^/articles/"),
     contents_labels = contents %>%
-      html_nodes(".mb4 span:nth-child(1)") %>%
-      html_text()
+      rvest::html_nodes(".mb4 span:nth-child(1)") %>%
+      rvest::html_text()
   )
 
   if (nrow(res) > 0)
@@ -84,68 +85,69 @@ get_nature_articles <- function(addr, polite_bow, csv_path) {
   article_html <- get_page(addr, polite_bow)
 
   article_title <- article_html %>%
-    html_node(".c-article-title, .article-item__title") %>%
-    html_text()
+    rvest::html_node(".c-article-title, .article-item__title") %>%
+    rvest::html_text()
 
   article_subject <- article_html %>%
-    html_node(".c-article-title__super, .article-item__subject") %>%
-    html_text()
+    rvest::html_node(".c-article-title__super, .article-item__subject") %>%
+    rvest::html_text()
 
   doi_txt <- NA_character_
   doi_link <- NA_character_
 
-  if (str_to_lower(article_title) == "research highlights") {
+  if (stringr::str_to_lower(article_title) == "research highlights") {
     # early volumes -----------------------------------------
     coda <- c("journal club",
               "rights and permissions",
               "about this article",
               "comments")
     article_title <- article_html %>%
-      html_nodes(".c-article-section__title") %>%
+      rvest::html_nodes(".c-article-section__title") %>%
       html_text
-    stop_at <- which(str_to_lower(article_title) %in% coda) %>% min()
+    stop_at <-
+      which(stringr::str_to_lower(article_title) %in% coda) %>% min()
     ## stop short of journal club
     article_title <- head(article_title, stop_at - 1)
 
     external_refs <- article_html %>%
-      html_nodes(".c-article-section__content")
+      rvest::html_nodes(".c-article-section__content")
 
     link_list <- external_refs %>%
-      map(html_nodes, css = "a") %>%
+      purrr::map(html_nodes, css = "a") %>%
       head(length(article_title)) %>%
-      map(html_attr, name = "href")
+      purrr::map(html_attr, name = "href")
 
     txt_list <- external_refs %>%
-      map(html_node, css = "p") %>%
+      purrr::map(html_node, css = "p") %>%
       head(length(article_title)) %>%
-      map(html_text) %>%
-      str_squish()
+      purrr::map(html_text) %>%
+      stringr::str_squish()
 
-    df_refs <- tibble(ttl = article_title,
-                      txt = txt_list,
-                      a = link_list) %>%
+    df_refs <- tibble::tibble(ttl = article_title,
+                              txt = txt_list,
+                              a = link_list) %>%
       unnest(a, keep_empty = TRUE)
 
-    article_title <- pull(df_refs, ttl)
-    doi_txt <- pull(df_refs, txt)
-    doi_link <- pull(df_refs, a)
+    article_title <- dplyr::pull(df_refs, ttl)
+    doi_txt <- dplyr::pull(df_refs, txt)
+    doi_link <- dplyr::pull(df_refs, a)
   } else {
     # later volumes -----------------------------------------
     external_refs <- article_html %>%
-      html_nodes(".c-article-section__content a, .serif")
+      rvest::html_nodes(".c-article-section__content a, .serif")
 
     doi_idx <- external_refs %>%
-      html_attr("href") %>%
-      str_detect("doi[.]org")
+      rvest::html_attr("href") %>%
+      stringr::str_detect("doi[.]org")
 
     if (any(doi_idx)) {
       doi_txt <- external_refs %>%
-        html_text() %>%
+        rvest::html_text() %>%
         subset(doi_idx) %>%
         head(1) %>% ## ! leap of faith
-        str_squish()
+        stringr::str_squish()
       doi_link <- external_refs %>%
-        html_attr("href") %>%
+        rvest::html_attr("href") %>%
         subset(doi_idx) %>%
         head(1) ## ! leap of faith
     }
@@ -153,14 +155,14 @@ get_nature_articles <- function(addr, polite_bow, csv_path) {
 
   if (is.na(article_subject)) {
     # try to parse subject from title
-    subject_title <- str_split(article_title, ": ", n = 2)
-    article_subject <- map_chr(subject_title, head, 1)
-    article_title <- map_chr(subject_title, tail, 1)
+    subject_title <- stringr::str_split(article_title, ": ", n = 2)
+    article_subject <- purrr::map_chr(subject_title, head, 1)
+    article_title <- purrr::map_chr(subject_title, tail, 1)
     if (identical(article_subject, article_title))
       article_subject <- NA_character_
   }
 
-  res <- tibble(
+  res <- tibble::tibble(
     article_key = addr,
     title = article_title,
     topic = article_subject,

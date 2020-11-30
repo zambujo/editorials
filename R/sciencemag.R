@@ -17,13 +17,13 @@ NULL
 #' @rdname get_sciencemag
 #' @export
 get_sciencemag_issues <- function(year, polite_bow, csv_path) {
-  addr <- str_c("content/by/year/", year)
+  addr <- stringr::str_c("content/by/year/", year)
   issues_html <- get_page(addr, polite_bow)
-  res <- tibble(
+  res <- tibble::tibble(
     issue_year = as.numeric(year),
     issue_key = issues_html %>%
-      html_nodes(".issue-month-detail .highwire-cite-linked-title") %>%
-      html_attr("href")
+      rvest::html_nodes(".issue-month-detail .highwire-cite-linked-title") %>%
+      rvest::html_attr("href")
   )
 
   return_df(res, csv_path)
@@ -36,8 +36,8 @@ get_sciencemag_articles <- function(addr,
                                     polite_bow,
                                     csv_path) {
   validate_ref <- function(x) {
-    x_wc <-  map_int(str_split(x, " "), length)
-    if (x_wc > 25 | str_detect(x, "^[↵]")) {
+    x_wc <-  purrr::map_int(stringr::str_split(x, " "), length)
+    if (x_wc > 25 | stringr::str_detect(x, "^[↵]")) {
       x <- NA_character_
     }
     x
@@ -46,41 +46,41 @@ get_sciencemag_articles <- function(addr,
   twil_html <- get_page(addr, polite_bow)
 
   ref_title <- twil_html %>%
-    html_nodes("#content-block-markup h1") %>%
-    html_text()
+    rvest::html_nodes("#content-block-markup h1") %>%
+    rvest::html_text()
 
   ref_editor <- twil_html %>%
-    html_nodes(".name") %>%
-    html_text()
+    rvest::html_nodes(".name") %>%
+    rvest::html_text()
 
   ref_topics <- twil_html %>%
-    html_nodes(".compilation-overline") %>%
-    html_text() %>%
-    str_to_title()
+    rvest::html_nodes(".compilation-overline") %>%
+    rvest::html_text() %>%
+    stringr::str_to_title()
 
   twil_reference <- twil_html %>%
-    html_nodes("ol .compilation")
+    rvest::html_nodes("ol .compilation")
 
   ref_url <- twil_reference %>%
-    html_attr("xml:base")
+    rvest::html_attr("xml:base")
 
   # TODO: https://github.com/zambujo/editorials/issues/17
   p_ids <- twil_reference %>%
-    html_nodes("p") %>%
-    html_attr("id")
+    rvest::html_nodes("p") %>%
+    rvest::html_attr("id")
   p_wc <- twil_reference %>%
-    html_nodes("p") %>%
-    html_text() %>%
-    str_split(" ") %>%
-    map_int(length)
+    rvest::html_nodes("p") %>%
+    rvest::html_text() %>%
+    stringr::str_split(" ") %>%
+    purrr::map_int(length)
   # expecting summaries w/ more than 60 words
   p_idx <- 1 + which(p_wc > 60)
   p_path <- glue("#{p_ids[p_idx]}") %>%
     paste(collapse = ", ")
   ref_paper <- twil_reference %>%
-    html_nodes(p_path) %>%
-    html_text() %>%
-    map_chr(validate_ref) %>%
+    rvest::html_nodes(p_path) %>%
+    rvest::html_text() %>%
+    purrr::map_chr(validate_ref) %>%
     na.omit() %>%
     as.character()
 
@@ -90,15 +90,15 @@ get_sciencemag_articles <- function(addr,
   if (length(ref_paper) != length(ref_title))
     ref_paper = rep(NA_character_, length(ref_title))
 
-  res <- tibble(
+  res <- tibble::tibble(
     highlight_key = ref_url,
     title = ref_title,
     editor = ref_editor,
     topic = ref_topics,
     ref = ref_paper
   ) %>%
-    mutate(editorial_key = addr) %>%
-    select(editorial_key, everything())
+    dplyr::mutate(editorial_key = addr) %>%
+    dplyr::select(editorial_key, dplyr::everything())
 
   return_df(res, csv_path)
 }
