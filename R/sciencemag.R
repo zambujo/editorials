@@ -64,6 +64,7 @@ get_sciencemag_articles <- function(addr,
   ref_url <- twil_reference %>%
     html_attr("xml:base")
 
+  # TODO: https://github.com/zambujo/editorials/issues/17
   p_ids <- twil_reference %>%
     html_nodes("p") %>%
     html_attr("id")

@@ -7,6 +7,7 @@ source(here("R", "doi_utils.R"))
 science_issues <-
   read_csv(here("data-raw", "sciencemag-issues.csv"))
 
+# TODO: https://github.com/zambujo/editorials/issues/17
 science_highlights <-
   read_csv(here("data-raw", "sciencemag-highlights.csv")) %>%
   ## un-nest or "explode" multiple references
