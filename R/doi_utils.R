@@ -3,7 +3,7 @@ resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
 
   # bypass Elsevier's JS-redirection..
   meta_nodes <- on_publisher %>%
-    rvest::pluck('meta')
+    rvest::html_nodes('meta')
   meta_http <- meta_nodes %>%
     rvest::html_attr('http-equiv')
   redirect_idx <- meta_http %>%
@@ -23,7 +23,7 @@ resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
       xml2::read_html()
 
     meta_nodes <- on_publisher %>%
-      rvest::pluck('meta')
+      rvest::html_nodes('meta')
   }
 
   meta_names <- meta_nodes %>%

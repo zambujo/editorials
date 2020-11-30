@@ -19,7 +19,7 @@ time_period %>%
 
 # articles ...
 readr::read_csv(here::here("data-raw", "sciencemag-issues.csv")) %>%
-  mutate(archive_links = str_c(issue_key, "/twil")) %>%
+  dplyr::mutate(archive_links = stringr::str_c(issue_key, "/twil")) %>%
   dplyr::pull(archive_links) %>%
   purrr::walk(
     get_sciencemag_articles,
@@ -53,7 +53,7 @@ readr::read_csv(here::here("data-raw", "nature-issues.csv")) %>%
 
 # articles ...
 readr::read_csv(here::here("data-raw", "nature-contents.csv")) %>%
-  dplyr::filter(str_detect(contents_labels, "Research Highlight")) %>%
+  dplyr::filter(stringr::str_detect(contents_labels, "Research Highlight")) %>%
   dplyr::pull(article_key) %>%
   purrr::walk(
     get_nature_articles,
