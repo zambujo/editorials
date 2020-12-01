@@ -1,5 +1,5 @@
 default:
-  mailto: "joao.martins@gmx.net"
-  agent: "Martins (https://github.com/zambujo/editorials/; mailto:joao.martins@gmx.net)"
+  mailto: "GroovyBib@example.org"
+  agent: "GroovyBib/1.1 (https://example.org/GroovyBib/; mailto:GroovyBib@example.org) BasedOnFunkyLib/1.4"
   start_year: 2005
   end_year: 2020
