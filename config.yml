@@ -1,4 +1,5 @@
 default:
-  agent: "Martins <https://github.com/zambujo/editorials/>"
+  mailto: "joao.martins@gmx.net"
+  agent: "Martins (https://github.com/zambujo/editorials/; mailto:joao.martins@gmx.net)"
   start_year: 2005
   end_year: 2020

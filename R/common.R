@@ -7,14 +7,17 @@ roger_that <- function(x, msg = "Parsing") {
 }
 
 
-get_page <- function(addr, obj_polite, verbose = TRUE) {
+get_page <- function(addr,
+                     obj_polite,
+                     accept = "html",
+                     verbose = TRUE) {
   if (missing(obj_polite))
     stop("Missing polite::bow() session. Try to be polite. Please.")
   if (verbose)
     roger_that(addr)
 
   session <- polite::nod(bow = obj_polite, path = addr)
-  return(polite::scrape(session))
+  return(polite::scrape(session, accept = accept, verbose = verbose))
 }
 
 

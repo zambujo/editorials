@@ -3,9 +3,9 @@ resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
 
   # bypass Elsevier's JS-redirection..
   meta_nodes <- on_publisher %>%
-    rvest::html_nodes('meta')
+    rvest::html_nodes("meta")
   meta_http <- meta_nodes %>%
-    rvest::html_attr('http-equiv')
+    rvest::html_attr("http-equiv")
   redirect_idx <- meta_http %>%
     stringr::str_which(regex("refresh", ignore_case = TRUE)) %>%
     head(1)
@@ -13,7 +13,7 @@ resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
   if (length(redirect_idx) > 0) {
     redir <- meta_nodes %>%
       purrr::pluck(redirect_idx) %>%
-      rvest::html_attr('content') %>%
+      rvest::html_attr("content") %>%
       url_decode() %>%
       stringr::str_extract("http(.*)(?=[&?])")
 
@@ -23,26 +23,63 @@ resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
       xml2::read_html()
 
     meta_nodes <- on_publisher %>%
-      rvest::html_nodes('meta')
+      rvest::html_nodes("meta")
   }
 
   meta_names <- meta_nodes %>%
-    rvest::html_attr('name')
+    rvest::html_attr("name")
   doi_idx <- meta_names %>%
-    stringr::stringr::str_which(regex("doi|dc.identifier", ignore_case = TRUE)) %>%
+    stringr::str_which(regex("doi|dc.identifier", ignore_case = TRUE)) %>%
     head(1)
   doi <- meta_nodes %>%
-    rvest::html_attr('content') %>%
+    rvest::html_attr("content") %>%
     purrr::pluck(doi_idx, .default = NA_character_)
   res <- tibble::tibble(short_doi, doi)
   return_df(res, csv_path)
 }
 
 
+cross_ref <- function(doi, polite_bow, csv_path) {
+  res <- tibble::tibble(
+    doi,
+    cr_title = NA_character_,
+    cr_container_title = NA_character_,
+    cr_short_container_title = NA_character_,
+    cr_volume = NA_character_,
+    cr_issue = NA_character_,
+    cr_page = NA_character_,
+    cr_year = NA_character_
+  )
+  doi_mailto <- sprintf("works/%s?mailto=%s", doi, settings$mailto)
+  resp <- get_page(doi_mailto, polite_bow, accept = "json")
+  if (purrr::pluck(resp, "status") == "ok") {
+    resp <- purrr::pluck(resp, "message")
+    res <- res %>%
+      dplyr::mutate(
+        cr_title = purrr::pluck(resp, "title", 1,
+                                .default = NA_character_),
+        cr_container_title = purrr::pluck(resp, "container-title", 1,
+                                          .default = NA_character_),
+        cr_short_container_title = purrr::pluck(resp, "short-container-title",
+                                                1, .default = NA_character_),
+        cr_volume = purrr::pluck(resp, "volume", 1,
+                                 .default = NA_character_),
+        cr_issue = purrr::pluck(resp, "issue", 1,
+                                .default = NA_character_),
+        cr_page = purrr::pluck(resp, "page", 1,
+                               .default = NA_character_),
+        cr_year = purrr::pluck(resp, "created", "date-time", 1,
+                               .default = NA_character_)
+      )
+  }
+  return_df(res)
+}
+
 get_cr_data <- function(doi, csv_path, verbose = TRUE) {
   url <-
-    sprintf("https://api.crossref.org/v1/works/%s", url_encode(doi))
-  resp <- GET(url, add_headers("user-agent" = settings$agent))
+    sprintf("https://api.crossref.org/v1/works/%s", doi)
+  resp <-
+    httr::GET(url, httr::add_headers("user-agent" = settings$agent))
   res <- tibble::tibble(
     doi,
     cr_title = NA_character_,
@@ -56,7 +93,8 @@ get_cr_data <- function(doi, csv_path, verbose = TRUE) {
   if (verbose)
     roger_that(url, "Trying")
   if (http_type(resp) == "application/json" & !http_error(resp)) {
-    json <- jsonlite::fromJSON(content(resp, "text"), flatten = TRUE)
+    json <-
+      jsonlite::fromJSON(httr::content(resp, "text"), flatten = TRUE)
     res <- res %>%
       dplyr::mutate(
         cr_title = purrr::pluck(json,
