@@ -28,8 +28,8 @@ You can download the lastest update as [CSV](https://raw.githubusercontent.com/z
 1. Add your details to `config.yml`
 2. Install any missing packages listed in `DESCRIPTION`
 3. Rename or remove the CSV files in `data-raw/`
-4. Run `notebooks/scraping.Rmd` (takes a few hours)
-5. Run `notebooks/cleaning.Rmd` (also takes a few hours)
+4. Run [`notebooks/scraping.Rmd`](https://zambujo.github.io/editorials/scraping.html) (takes a few hours)
+5. Run [`notebooks/cleaning.Rmd`](https://zambujo.github.io/editorials/cleaning.html) (also takes a few hours)
 
 > Work-in-progress: notebooks will probably fail to run without errors.
 
