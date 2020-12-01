@@ -1,5 +1,5 @@
+`%>%` <- magrittr::`%>%` # export the pipe operator
 settings <- config::get()
-doi_regex <- "\\b10[.][[:digit:]]{4,9}[/][[:graph:]]+\\b"
 
 roger_that <- function(x, msg = "Parsing") {
   glue::glue("{msg} {x} ...") %>%

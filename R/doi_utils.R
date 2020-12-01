@@ -1,3 +1,6 @@
+# TODO: thank https://github.com/libscie/retractcheck/blob/master/R/utils.R
+doi_regex <- "\\b10\\.\\d{4,9}/[-._;()/:a-z0-9]+\\b"
+
 resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
   on_publisher <- get_page(short_doi, polite_bow)
 
@@ -7,7 +10,8 @@ resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
   meta_http <- meta_nodes %>%
     rvest::html_attr('http-equiv')
   redirect_idx <- meta_http %>%
-    stringr::str_which(regex("refresh", ignore_case = TRUE)) %>%
+    stringr::str_which(stringr::regex("refresh",
+                                      ignore_case = TRUE)) %>%
     head(1)
 
   if (length(redirect_idx) > 0) {
@@ -29,7 +33,8 @@ resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
   meta_names <- meta_nodes %>%
     rvest::html_attr('name')
   doi_idx <- meta_names %>%
-    stringr::stringr::str_which(regex("doi|dc.identifier", ignore_case = TRUE)) %>%
+    stringr::str_which(stringr::regex("doi|dc.identifier",
+                                      ignore_case = TRUE)) %>%
     head(1)
   doi <- meta_nodes %>%
     rvest::html_attr('content') %>%
@@ -41,8 +46,9 @@ resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
 
 get_cr_data <- function(doi, csv_path, verbose = TRUE) {
   url <-
-    sprintf("https://api.crossref.org/v1/works/%s", url_encode(doi))
-  resp <- GET(url, add_headers("user-agent" = settings$agent))
+    sprintf("https://api.crossref.org/works/%s", doi)
+  resp <-
+    httr::GET(url, httr::add_headers("user-agent" = settings$agent))
   res <- tibble::tibble(
     doi,
     cr_title = NA_character_,
@@ -55,8 +61,10 @@ get_cr_data <- function(doi, csv_path, verbose = TRUE) {
   )
   if (verbose)
     roger_that(url, "Trying")
-  if (http_type(resp) == "application/json" & !http_error(resp)) {
-    json <- jsonlite::fromJSON(content(resp, "text"), flatten = TRUE)
+  resp_is_success <- !httr::http_error(resp)
+  resp_is_json <- httr::http_type(resp) == "application/json"
+  if (resp_is_success & resp_is_json) {
+    json <- jsonlite::fromJSON(httr::content(resp, "text"), flatten = TRUE)
     res <- res %>%
       dplyr::mutate(
         cr_title = purrr::pluck(json,
@@ -98,4 +106,11 @@ get_cr_data <- function(doi, csv_path, verbose = TRUE) {
       )
   }
   return_df(res, csv_path)
+}
+
+get_cr_batch <- function(dois) {
+  cr_list <- rcrossref::cr_cn(dois,
+                              "citeproc-json",
+                              .progress = "text")
+  return(cr_list)
 }

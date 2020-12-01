@@ -9,7 +9,7 @@ Authors@R:
            email = "joao.martins@gmx.net",
            comment = c(ORCID = "0000-0001-7961-4280"))
 Description: A compendium for scraping, parsing, and compiling 
-weekly editorial highlights from Science and Nature.
+    weekly editorial highlights from Science and Nature.
 License: MIT
 Depends: 
     config,
@@ -21,7 +21,6 @@ Depends:
     rvest,
     tibble,
     tidyverse,
-    urltools,
     xml2
 Suggests:
     testthat,
@@ -31,3 +30,5 @@ LazyData: true
 URL: https://github.com/zambujo/editorials
 BugReports: https://github.com/zambujo/editorials/issues
 RoxygenNote: 7.1.1
+Imports: 
+    magrittr
