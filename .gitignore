@@ -39,7 +39,7 @@ vignettes/*.pdf
 .Renviron
 
 # Personal files and folders
+config.yml
 /other/
 .DS_Store
 /tests/
-config.yml
