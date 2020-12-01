@@ -1,11 +1,11 @@
-`%>%` <- magrittr::`%>%` # export the pipe operator
 settings <- config::get()
+`%>%` <- magrittr::`%>%` # export the pipe operator
+time_period <- seq(settings$start_year, settings$end_year)
 
 roger_that <- function(x, msg = "Parsing") {
   glue::glue("{msg} {x} ...") %>%
     message()
 }
-
 
 get_page <- function(addr,
                      obj_polite,
@@ -19,7 +19,6 @@ get_page <- function(addr,
   session <- polite::nod(bow = obj_polite, path = addr)
   return(polite::scrape(session, accept = accept, verbose = verbose))
 }
-
 
 return_df <- function(x, file_csv, verbose = TRUE) {
   if (missing(x))

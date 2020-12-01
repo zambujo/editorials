@@ -38,7 +38,8 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-# Personal folders
-/alien/
+# Personal files and folders
+/other/
 .DS_Store
 /tests/
+config.yml

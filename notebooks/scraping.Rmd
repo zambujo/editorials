@@ -1,12 +1,30 @@
-library("here")
-source(here::here("R", "common.R"))
-source(here::here("R", "nature.R"))
+---
+title: "Scraping notes"
+author: "Joao Martins"
+knit: (function(inputFile, encoding) { 
+      rmarkdown::render(inputFile,
+                        encoding=encoding, 
+                        output_file=here::here('docs', 'scraping.html')) })
+output:
+  html_document:
+    toc: true
+    theme: united
+    highlight: breezedark
+    toc_float: true
+    df_print: paged
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source(here::here("R", "global.R"))
+```
+
+## Sicence Magazine
+
+```{r sciencemag, eval=FALSE}
 source(here::here("R", "sciencemag.R"))
-
-##  initial collection :
-time_period <- seq(settings$start_year, settings$end_year)
-
-# science magazine --------------------------------------------------------
 session_bow <- polite::bow(url = "https://science.sciencemag.org",
                            user_agent = settings$agent)
 # issues ...
@@ -26,8 +44,12 @@ readr::read_csv(here::here("data-raw", "sciencemag-issues.csv")) %>%
     polite_bow = session_bow,
     csv_path = here::here("data-raw", "sciencemag-highlights.csv")
   )
+```
 
-# nature ------------------------------------------------------------------
+## Nature Journal
+
+```{r nature, eval=FALSE}
+source(here::here("R", "nature.R"))
 session_bow <- polite::bow(url = "https://www.nature.com",
                            user_agent = settings$agent)
 # volumes ...
@@ -60,3 +82,4 @@ readr::read_csv(here::here("data-raw", "nature-contents.csv")) %>%
     polite_bow = session_bow,
     csv_path = here::here("data-raw", "nature-highlights.csv")
   )
+```

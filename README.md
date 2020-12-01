@@ -25,9 +25,12 @@ You can download the lastest update as [CSV](https://raw.githubusercontent.com/z
 
 ## Workflow
 
-1. Rename or remove the CSV files in `data-raw/`
-2. Run `data-raw/harvest_all.R` (takes a few hours)
-3. Run `data-raw/prepare_data.R`
+1. Check `DESCRIPTION` to see package dependencies
+2. Rename or remove the CSV files in `data-raw/`
+3. Run `notebooks/scraping.Rmd` (takes a few hours)
+4. Run `notebooks/cleaning.Rmd` (also takes a few hours)
+
+> Work-in-progress: notebooks will probably fail to run without errors.
 
 ## License
 
