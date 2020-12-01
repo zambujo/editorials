@@ -25,10 +25,11 @@ You can download the lastest update as [CSV](https://raw.githubusercontent.com/z
 
 ## Workflow
 
-1. Check `DESCRIPTION` to see package dependencies
-2. Rename or remove the CSV files in `data-raw/`
-3. Run `notebooks/scraping.Rmd` (takes a few hours)
-4. Run `notebooks/cleaning.Rmd` (also takes a few hours)
+1. Add your details to `config.yml`
+2. Install any missing packages listed in `DESCRIPTION`
+3. Rename or remove the CSV files in `data-raw/`
+4. Run `notebooks/scraping.Rmd` (takes a few hours)
+5. Run `notebooks/cleaning.Rmd` (also takes a few hours)
 
 > Work-in-progress: notebooks will probably fail to run without errors.
 
