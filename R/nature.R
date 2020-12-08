@@ -113,14 +113,14 @@ get_nature_articles <- function(addr, polite_bow, csv_path) {
       rvest::html_nodes(".c-article-section__content")
 
     link_list <- external_refs %>%
-      purrr::map(html_nodes, css = "a") %>%
+      purrr::map(rvest::html_nodes, css = "a") %>%
       head(length(article_title)) %>%
-      purrr::map(html_attr, name = "href")
+      purrr::map(rvest::html_attr, name = "href")
 
     txt_list <- external_refs %>%
-      purrr::map(html_node, css = "p") %>%
+      purrr::map(rvest::html_node, css = "p") %>%
       head(length(article_title)) %>%
-      purrr::map(html_text) %>%
+      purrr::map(rvest::html_text) %>%
       stringr::str_squish()
 
     df_refs <- tibble::tibble(ttl = article_title,

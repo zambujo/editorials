@@ -44,109 +44,48 @@ resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
 }
 
 
-cross_ref <- function(doi, polite_bow, csv_path) {
-  res <- tibble::tibble(
-    doi,
-    cr_title = NA_character_,
-    cr_container_title = NA_character_,
-    cr_short_container_title = NA_character_,
-    cr_volume = NA_character_,
-    cr_issue = NA_character_,
-    cr_page = NA_character_,
-    cr_year = NA_character_
-  )
+get_cr_raw <- function(doi, polite_bow) {
   doi_mailto <- sprintf("works/%s?mailto=%s", doi, settings$mailto)
   resp <- get_page(doi_mailto, polite_bow, accept = "json")
   if (purrr::pluck(resp, "status") == "ok") {
     resp <- purrr::pluck(resp, "message")
-    res <- res %>%
-      dplyr::mutate(
-        cr_title = purrr::pluck(resp, "title", 1,
-                                .default = NA_character_),
-        cr_container_title = purrr::pluck(resp, "container-title", 1,
-                                          .default = NA_character_),
-        cr_short_container_title = purrr::pluck(resp, "short-container-title",
-                                                1, .default = NA_character_),
-        cr_volume = purrr::pluck(resp, "volume", 1,
-                                 .default = NA_character_),
-        cr_issue = purrr::pluck(resp, "issue", 1,
-                                .default = NA_character_),
-        cr_page = purrr::pluck(resp, "page", 1,
-                               .default = NA_character_),
-        cr_year = purrr::pluck(resp, "created", "date-time", 1,
-                               .default = NA_character_)
-      )
   }
-  return_df(res)
+  else {
+    resp <- NA
+  }
+  return(resp)
 }
 
-get_cr_data <- function(doi, csv_path, verbose = TRUE) {
-  url <-
-    sprintf("https://api.crossref.org/works/%s", doi)
-  resp <-
-    httr::GET(url, httr::add_headers("user-agent" = settings$agent))
-  res <- tibble::tibble(
-    doi,
-    cr_title = NA_character_,
-    cr_container_title = NA_character_,
-    cr_short_container_title = NA_character_,
-    cr_volume = NA_character_,
-    cr_issue = NA_character_,
-    cr_page = NA_character_,
-    cr_year = NA_character_
-  )
-  if (verbose)
-    roger_that(url, "Trying")
-  resp_is_success <- !httr::http_error(resp)
-  resp_is_json <- httr::http_type(resp) == "application/json"
-  if (resp_is_success & resp_is_json) {
-    json <- jsonlite::fromJSON(httr::content(resp, "text"), flatten = TRUE)
-    res <- res %>%
-      dplyr::mutate(
-        cr_title = purrr::pluck(json,
-                                "message",
-                                "title",
-                                1,
-                                .default = NA_character_),
-        cr_container_title = purrr::pluck(json,
-                                          "message",
-                                          "container-title",
-                                          1,
-                                          .default = NA_character_),
-        cr_short_container_title = purrr::pluck(json,
-                                                "message",
-                                                "short-container-title",
-                                                1,
-                                                .default = NA_character_),
-        cr_volume = purrr::pluck(json,
-                                 "message",
-                                 "volume",
-                                 1,
-                                 .default = NA_character_),
-        cr_issue = purrr::pluck(json,
-                                "message",
-                                "issue",
-                                1,
-                                .default = NA_character_),
-        cr_page = purrr::pluck(json,
-                               "message",
-                               "page",
-                               1,
-                               .default = NA_character_),
-        cr_year = purrr::pluck(json,
-                               "message",
-                               "created",
-                               "date-time",
-                               1,
-                               .default = NA_character_)
-      )
-  }
-  return_df(res, csv_path)
-}
+crossref_basic <- function(doi,
+                           cr_json,
+                           csv_path,
+                           yml_file = here::here("inst", "crossref.yml")) {
+    if (!file.exists(yml_file))
+      stop("Crossref definition configuration YAML file could not be found.")
+    cr_yml <- yaml::read_yaml(yml_file)
 
-get_cr_batch <- function(dois) {
-  cr_list <- rcrossref::cr_cn(dois,
-                              "citeproc-json",
-                              .progress = "text")
-  return(cr_list)
+    if (!is.na(cr_json)) {
+      cr_yml <- cr_yml %>%
+        map( ~ append(., list(1))) # pluck --force 1st element
+      cr_fields <- purrr::map(cr_yml, function(x)
+        purrr::pluck(cr_json, !!!x, .default = NA_character_))
+    } else {
+      cr_fields <- purrr::map(cr_yml, function(x)
+        NA_character_)
+    }
+    dplyr::tibble(doi) %>%
+      dplyr::bind_cols(dplyr::as_tibble(cr_fields)) %>%
+      return_df()
+  }
+
+crossref_funders <- function(doi, cr_json, csv_path) {
+  funder <- NA_character_
+  if (!is.na(cr_json)) {
+    funder <- purrr::pluck(cr_json, "funder", .default = NA_character_)
+    if (!is.na(funding)) {
+      funder <- purrr::map_chr(funder, "name")
+    }
+  }
+  tibble(doi, funder) %>%
+    return_df()
 }

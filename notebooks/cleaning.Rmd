@@ -113,31 +113,36 @@ df <- highlights %>%
   )
 ```
 
-## DOIs
+## Funding information
 
 ```{r dois, eval=FALSE}
 source(here::here("R", "doi_utils.R"))
-highlights <- readr::read_csv(here::here("data", "research_highlights.csv")) %>%
+# ! hand-curated DOIs
+dois <- readr::read_csv(here::here("data-raw", 
+                                   "doi_curated.csv"))
+dois <- dois %>%
+  dplyr::rename(doi = highlight_ref_doi) %>%
   dplyr::mutate(
-    doi = stringr::str_extract(resource,
-                               stringr::regex(doi_regex, ignore_case = TRUE)),
+    doi = stringr::str_extract(doi,
+                               stringr::regex(doi_regex, 
+                                              ignore_case = TRUE)),
     doi = stringr::str_to_lower(doi),
     doi = stringr::str_trim(doi)
-  )
-
-full_dois <-
-  readr::read_csv(here::here("data-raw", "full_dois.csv"))
-
-dois <- highlights %>%
+  ) %>%
   tidyr::drop_na(doi) %>%
   dplyr::distinct(doi) %>%
-  dplyr::anti_join(full_dois, by = c("doi")) %>%
   dplyr::pull()
 
-# TODO: replace `get_cr_data()` w/ `cross_ref()` + `polite::bow()`
-purrr::walk(dois,
-            get_cr_data,
-            csv_path = here::here("data-raw", "full_dois.csv"))
+session_bow <- polite::bow(url = "https://api.crossref.org",
+                           user_agent = settings$agent)
+
+# TODO: fix code here
+dois %>% 
+  sample(6) %>%
+  purrr::walk(cross_ref,
+              polite_bow = session_bow,
+              csv_path = here::here("data-raw", "doi_meta.csv"))
+
 
 short_dois <-
   highlights %>%
