@@ -1,5 +1,5 @@
 # TODO: thank https://github.com/libscie/retractcheck/blob/master/R/utils.R
-doi_regex <- "\\b10\\.\\d{4,9}/[-._;()/:a-z0-9]+\\b"
+doi_regex <- "\\b10\\.\\d{4,9}/[-._;()/:[:alnum:]]+\\b"
 
 resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
   on_publisher <- get_page(short_doi, polite_bow)
@@ -43,7 +43,6 @@ resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
   return_df(res, csv_path)
 }
 
-
 get_cr_raw <- function(doi, polite_bow) {
   doi_mailto <- sprintf("works/%s?mailto=%s", doi, settings$mailto)
   resp <- get_page(doi_mailto, polite_bow, accept = "json")
@@ -64,9 +63,9 @@ crossref_basic <- function(doi,
       stop("Crossref definition configuration YAML file could not be found.")
     cr_yml <- yaml::read_yaml(yml_file)
 
-    if (!is.na(cr_json)) {
+    if (!is.na(head(cr_json, 1))) {
       cr_yml <- cr_yml %>%
-        map( ~ append(., list(1))) # pluck --force 1st element
+        purrr::map( ~ append(., list(1))) # pluck --force 1st element
       cr_fields <- purrr::map(cr_yml, function(x)
         purrr::pluck(cr_json, !!!x, .default = NA_character_))
     } else {
@@ -75,17 +74,17 @@ crossref_basic <- function(doi,
     }
     dplyr::tibble(doi) %>%
       dplyr::bind_cols(dplyr::as_tibble(cr_fields)) %>%
-      return_df()
+      return_df(csv_path)
   }
 
 crossref_funders <- function(doi, cr_json, csv_path) {
   funder <- NA_character_
-  if (!is.na(cr_json)) {
+  if (!is.na(head(cr_json, 1))) {
     funder <- purrr::pluck(cr_json, "funder", .default = NA_character_)
-    if (!is.na(funding)) {
+    if (!is.na(head(funder, 1))) {
       funder <- purrr::map_chr(funder, "name")
     }
   }
-  tibble(doi, funder) %>%
-    return_df()
+  dplyr::tibble(doi, funder) %>%
+    return_df(csv_path)
 }

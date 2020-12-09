@@ -1,0 +1,19 @@
+title:
+  - title
+container_title:
+  - container-title
+short_container_title:
+  - short-container-title
+publisher:
+  - publisher
+volume:
+  - volume
+issue:
+  - issue
+page:
+  - page
+date_time:
+  - created
+  - date-time
+type:
+  - type
