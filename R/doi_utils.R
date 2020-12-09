@@ -46,11 +46,12 @@ resolve_shortdoi <- function(short_doi, polite_bow, csv_path) {
 get_cr_raw <- function(doi, polite_bow) {
   doi_mailto <- sprintf("works/%s?mailto=%s", doi, settings$mailto)
   resp <- get_page(doi_mailto, polite_bow, accept = "json")
-  if (purrr::pluck(resp, "status") == "ok") {
-    resp <- purrr::pluck(resp, "message")
-  }
-  else {
+  if (is.null(resp)) {
     resp <- NA
+  } else if (purrr::pluck(resp, "status") != "ok") {
+    resp <- NA
+  } else {
+    resp <- purrr::pluck(resp, "message")
   }
   return(resp)
 }
